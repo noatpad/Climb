@@ -12,7 +12,7 @@ public class Player extends Object {
     private int velX, velY;
     private boolean facingRight;
     private boolean grounded, climbing, walledL, walledR;
-    private Boundary boundaryClimbing;
+    private Boundary climbableBound;
     
     public Player(int x, int y, int width, int height, Level lvl) {
 	super(x, y, width, height);
@@ -27,16 +27,39 @@ public class Player extends Object {
 	walledL = false; walledR = false;
     }
     
-    public void ledgeClimb(Boundary b) {
-	if (getX() < b.x) {
-	    setX(b.x + 1);
-	} else {
-	    setX(b.x + b.width - getWidth() - 1);
+    private boolean canClimb() {
+	if (climbableBound == null) {
+	    return false;
 	}
+	return ledgeBox.y <= climbableBound.getWallL().y + climbableBound.getWallL().height &&
+		ledgeBox.y + ledgeBox.height >= climbableBound.getWallL().y;
+    }
+    
+    public void ledgeClimb() {
+	if (getX() < climbableBound.x) {
+	    setX(climbableBound.x + 1);
+	} else {
+	    setX(climbableBound.x + climbableBound.width - getWidth() - 1);
+	}
+	setY(climbableBound.y - getHeight());
+	velY = 0;
+	
 	walledL = false;
 	walledR = false;
-	setY(b.y - getHeight());
 	climbing = false;
+    }
+    
+    public void wallJump() {
+	if (facingRight) {
+	    velX = -10;
+	    walledR = false;
+	} else {
+	    velX = 10;
+	    walledL = false;
+	}
+	velY = -12;
+	climbing = false;
+	grounded = false;
     }
     
     public void updateBoxes() {
@@ -67,14 +90,14 @@ public class Player extends Object {
 	    l = false; r = false; g = false;
 
 	    if (!(walledL || walledR) && box.intersects(b.getWallL())) {	    // If player touches the left wall
-		boundaryClimbing = b;
+		climbableBound = b;
 		if (velX > 0) {
 		    velX = 0;
 		    setX((int) b.getWallL().getX() - getWidth());
 		}
 		r = true;
 	    } else if (!(walledL || walledR) && box.intersects(b.getWallR())) {	    // If player touches the right wall
-		boundaryClimbing = b;
+		climbableBound = b;
 		if (velX < 0) {
 		    velX = 0;
 		    setX((int) (b.getWallR().getX() + b.getWallR().getWidth()));
@@ -115,10 +138,15 @@ public class Player extends Object {
 	    }
 	}
 	
-	if ((walledL || walledR) && keyC) {
-	    climbing = true;
-	} else if (climbing && !keyC) {
-	    climbing = false;
+	if ((walledL || walledR) && canClimb()) {
+	    if (keyC) {
+		climbing = true;
+	    } else if (climbing && !keyC) {
+		climbing = false;
+	    }
+	} else {
+	    walledL = false;
+	    walledR = false;
 	}
 	
 	if (climbing) {	    // Vertical movement (climbing)
@@ -126,12 +154,12 @@ public class Player extends Object {
 		velY = 0;
 	    } else if (up) {
 		velY = -2;
-		if (ledgeBox.y + ledgeBox.height + velY < boundaryClimbing.getWallL().y) {
-		    ledgeClimb(boundaryClimbing);
+		if (ledgeBox.y + ledgeBox.height + velY < climbableBound.getWallL().y) {
+		    ledgeClimb();
 		}
 	    } else if (down && !grounded) {
 		velY = 2;
-		if (ledgeBox.y + velY > boundaryClimbing.getWallL().y + boundaryClimbing.getWallL().height) {
+		if (ledgeBox.y + velY > climbableBound.getWallL().y + climbableBound.getWallL().height) {
 		    velY = 0;
 		}
 	    }
@@ -148,18 +176,26 @@ public class Player extends Object {
 	}
 	
 	if (grounded) {
-	    if (lvl.getKeyMan().typed(KeyEvent.VK_SPACE)) {
-		grounded = false;
-		velY = -15;
-	    }
 	    if (velX > 0) {
 		facingRight = true;
 	    } else if (velX < 0) {
 		facingRight = false;
 	    }
-	} else {
-	    if (!climbing && velY < 6) {
+	} else if (!climbing) {
+	    if ((walledL && left) || (walledR && right)) {
+		velY = (velY > 3 ? velY - 2 : velY + 1);
+		facingRight = right;
+	    } else if (velY < 8) {
 		velY++;
+	    }
+	}
+	
+	if (lvl.getKeyMan().typed(KeyEvent.VK_SPACE)) {
+	    if (grounded) {
+		grounded = false;
+		velY = -15;
+	    } else if (walledL || walledR) {
+		wallJump();
 	    }
 	}
 	
