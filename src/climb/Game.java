@@ -23,8 +23,6 @@ public class Game implements Runnable {
     private Menu menu;		// Main menu instance
     private Level lvl;		// Level instance
     
-    /* CONSTRUCTOR */
-
     /**
      * Game constructor
      * @param title Title of game

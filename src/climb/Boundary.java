@@ -8,6 +8,13 @@ import java.awt.Rectangle;
 public class Boundary extends Object {
     private Rectangle floor, wallL, wallR, ceiling;
 
+    /**
+     * Boundary Constructor
+     * @param x - X coordinate of boundary
+     * @param y - Y coordinate of boundary
+     * @param width - width of boundary
+     * @param height - height of boundary
+     */
     public Boundary(int x, int y, int width, int height) {
 	super(x, y, width, height);
 	floor = new Rectangle(x + 1, y, width - 2, 1);
@@ -15,19 +22,37 @@ public class Boundary extends Object {
 	wallR = new Rectangle(x + width - 1, y + 1, 1, height - 2);
 	ceiling = new Rectangle(x + 1, y + height - 1, width - 2, 1);
     }
+    
+    /* GETTERS */
 
+    /**
+     * floor Getter
+     * @return floor
+     */
     public Rectangle getFloor() {
 	return floor;
     }
 
+    /**
+     * wallL Getter
+     * @return wallL
+     */
     public Rectangle getWallL() {
 	return wallL;
     }
 
+    /**
+     * wallR Getter
+     * @return wallR
+     */
     public Rectangle getWallR() {
 	return wallR;
     }
 
+    /**
+     * ceiling Getter
+     * @return ceiling
+     */
     public Rectangle getCeiling() {
 	return ceiling;
     }
