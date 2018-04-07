@@ -124,6 +124,10 @@ public class Player extends Object {
 		keyC = lvl.getKeyMan().pressed(KeyEvent.VK_C);
 	grounded = false;
 	
+	// Determine collision box position in immediate next tick (for collision detection purposes)
+	box.x = getX() + velX;
+	box.y = getY() + velY;
+	
 	// Boundary collision detection
 	for (Boundary b : lvl.getBounds()) {
 	    // Temporary booleans for walledL, walledR, and grounded (resets for each boundary)
@@ -185,6 +189,7 @@ public class Player extends Object {
 	    }
 	}
 	
+	// When sliding down the wall, slow down descent (and update 'facingRight')
 	if (!climbing && ((walledL && left) || walledR && right)) {
 	    velY = (velY > 3 ? velY - 2 : velY + 1);
 	    facingRight = right;
@@ -250,19 +255,6 @@ public class Player extends Object {
 	} else if (!climbing && velY < 8) {
 	    velY++;
 	}
-//	} else if (!climbing) {	    // When not climbing (in the air)
-//	    // Slide slower when pushing against the wall (and update facingRight, as well)
-//	    if ((walledL && left) || (walledR && right)) {
-//		velY = (velY > 3 ? velY - 2 : velY + 1);
-//		facingRight = right;
-//	    } else if (velY < 8) {	// Fall to a certain speed when freefalling
-//		velY++;
-//	    }
-//	}
-
-	if (walledR && right) {
-	    System.out.println(velX);
-	} 
 
 	// Update position with velocity
 	setX(getX() + velX);
