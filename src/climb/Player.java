@@ -8,12 +8,12 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.Line2D;
 
 public class Player extends Object {
-    private Level lvl;						// Current level instance
-    private Rectangle box, ledgeBox;				// Collision box & "ledge" box
-    private int velX, velY;					// Velocity
-    private boolean facingRight;				// Boolean when facing right
-    private boolean grounded, climbing, walledL, walledR;	// Booleans when touching a boundary
-    private Boundary climbableBound;				// Boundary instance that can be climbed
+    private Level lvl;							// Current level instance
+    private Rectangle box, ledgeBox;					// Collision box & "ledge" box
+    private int velX, velY;						// Velocity
+    private boolean facingRight;					// Boolean when facing right
+    private boolean grounded, ceiling, walledL, walledR, climbing;	// Booleans when touching a boundary
+    private Boundary climbableBound;					// Boundary instance that can be climbed
     
     /**
      * Player constructor
@@ -32,21 +32,27 @@ public class Player extends Object {
 	
 	velX = 0; velY = 0;
 	facingRight = true;
-	grounded = false; climbing = false;
+	grounded = false; ceiling = false;
 	walledL = false; walledR = false;
+	climbing = false;
     }
     
     /* METHODS */
     
     /**
-     * Determines if player is hitting the wall or the floor, by checking if the line between its current and previous position intersects with the wall
+     * Determines if player is hitting the corner of a boundary, by checking if the player's trajectory intersects with the wall
+     * @param top - True if hitting top corners, false if hitting bottom ones
      * @param x - X coordinate of an important point of the player (depends on the situation)
      * @param y - Y coordinate of an important point of the player (depends on the situation)
      * @param wall - Rectangle of the wall in question
-     * @return if player is hitting the wall (true) or the floor (false)
+     * @return if player is hitting the wall (true) or the floor/ceiling (false)
      */
-    private boolean wallOrFloor(int x, int y, Rectangle wall) {
-	Line2D line = new Line2D.Float(x, y, x - velX, y - velY);
+    private boolean cornerCollision(boolean top, int x, int y, Rectangle wall) {
+	// If the point is below the wall, automatically assume it's hitting the wall
+	if ((top && y > wall.y + wall.height) || (!top && y + getHeight() < wall.y)) {
+	    return true;
+	}
+	Line2D line = new Line2D.Float(x - velX, y - velY, x + velX, y + velY);
 	return line.intersects(wall);
     }
     
@@ -86,7 +92,7 @@ public class Player extends Object {
      */
     public void wallJump() {
 	if (facingRight) {
-	    velX = -10;
+	    velX = -6;
 	    walledR = false;
 	    facingRight = false;
 	} else {
@@ -122,7 +128,7 @@ public class Player extends Object {
 		left = lvl.getKeyMan().pressed(KeyEvent.VK_LEFT),
 		right = lvl.getKeyMan().pressed(KeyEvent.VK_RIGHT),
 		keyC = lvl.getKeyMan().pressed(KeyEvent.VK_C);
-	grounded = false;
+	grounded = false; ceiling = false;
 	
 	// Determine collision box position in immediate next tick (for collision detection purposes)
 	box.x = getX() + velX;
@@ -130,49 +136,64 @@ public class Player extends Object {
 	
 	// Boundary collision detection
 	for (Boundary b : lvl.getBounds()) {
-	    // Temporary booleans for walledL, walledR, and grounded (resets for each boundary)
-	    boolean l = false, r = false, g = false;
+	    // Temporary booleans for walledL, walledR, grounded, & hitting the ceiling (resets for each boundary)
+	    boolean l = false, r = false, g = false, c = false;
 	    
 	    if (!(walledL || walledR)) {	// Only enter if walledL & walledR aren't true
 		if (box.intersects(b.getWallR())) {		// If player touches the right wall
 		    l = true;
 		    climbableBound = b;
-		} else if (box.intersects(b.getWallL())) {	// If player touches the left wall
+		}
+		if (box.intersects(b.getWallL())) {	// If player touches the left wall
 		    r = true;
 		    climbableBound = b;
 		}
 	    }
 	    if (box.intersects(b.getFloor())) {	    // If player touches the floor
 		g = true;
-	    } else if (box.intersects(b.getCeiling()) && !grounded && !climbing) {	// If player touches the ceiling
-		// TODO: Determine what happens here and when bumping into bottom corners of boundaries
-		velY = 0;
-//		setY(b.y + b.height);
+	    }
+	    if (box.intersects(b.getCeiling()) && !grounded && !climbing) {	// If player touches the ceiling
+		c = true;
 	    }
 	    
 	    // Special cases when player touches a corner of a boundary
 	    if (g && l) {	    // Top-right corner
-		if (wallOrFloor(getX(), getY() + getHeight(), b.getWallR())) {
+		if (cornerCollision(true, getX(), getY() + getHeight(), b.getWallR())) {
 		    g = false;
 		} else {
 		    l = false;
 		}
 	    } else if (g && r) {    // Top-left corner
-		if (wallOrFloor(getX() + getWidth(), getY() + getHeight(), b.getWallL())) {
+		if (cornerCollision(true, getX() + getWidth(), getY() + getHeight(), b.getWallL())) {
 		    g = false;
 		} else {
 		    r = false;		    
 		}
 	    }
-	    // TODO: Special cases with bottom corners
+	    if (c && l) {
+		if (cornerCollision(false, getX(), getY(), b.getWallR())) {
+		    c = false;
+		} else {
+		    l = false;
+		}
+	    } else if (c && r) {
+		if (cornerCollision(false, getX() + getWidth(), getY(), b.getWallL())) {
+		    c = false;
+		} else {
+		    r = false;
+		}
+	    }
 	    
 	    // Corrects position when first touching wall/floor/ceiling (the player would paritally clip through without this)
 	    if (g && !grounded) {	    // Ground
 		setY((int) (b.getFloor().getY() - getHeight()) + 1);
 		velY = 0;
 		grounded = true;
+	    } else if (c && !ceiling) {
+		setY((int) (b.getCeiling().getY()));
+		velY = 0;
+		ceiling = true;
 	    }
-	    // TODO: Determine what happens when first hitting a ceiling
 	    if (l && !walledL) {	    // Left wall
 		setX((int) (b.getWallR().getX() + b.getWallR().getWidth()));
 		velX = 0;
@@ -184,7 +205,7 @@ public class Player extends Object {
 	    }
 	    
 	    // If all necessary booleans equal to true, 'break' the loop
-	    if (grounded && (walledL || walledR)) {
+	    if ((grounded || ceiling) && (walledL || walledR)) {
 		break;
 	    }
 	}
@@ -231,6 +252,13 @@ public class Player extends Object {
 	    } else if (right && !walledR) {		    // Holding right (and no wall is in the way)
 		walledL = false;
 		velX += (velX < 6 ? 2 : 0);
+	    }
+	    
+	    // velX regulation if going too fast
+	    if (velX > 6) {
+		velX--;
+	    } else if (velX < -6) {
+		velX++;
 	    }
 	}
 	
