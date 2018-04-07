@@ -166,31 +166,28 @@ public class Player extends Object {
 	    if (g && !grounded) {	    // Ground
 		setY((int) (b.getFloor().getY() - getHeight()) + 1);
 		velY = 0;
+		grounded = true;
 	    }
 	    // TODO: Determine what happens when first hitting a ceiling
 	    if (l && !walledL) {	    // Left wall
 		setX((int) (b.getWallR().getX() + b.getWallR().getWidth()));
 		velX = 0;
+		walledL = true;
 	    } else if (r && !walledR) {	    // Right wall
 		setX((int) b.getWallL().getX() - getWidth());
 		velX = 0;
-	    }
-	    
-	    // Update booleans to true when possible
-	    if (!grounded) {
-		grounded = g;
-	    }
-	    if (!walledL) {
-		walledL = l;
-	    }
-	    if (!walledR) {
-		walledR = r;
+		walledR = true;
 	    }
 	    
 	    // If all necessary booleans equal to true, 'break' the loop
 	    if (grounded && (walledL || walledR)) {
 		break;
 	    }
+	}
+	
+	if (!climbing && ((walledL && left) || walledR && right)) {
+	    velY = (velY > 3 ? velY - 2 : velY + 1);
+	    facingRight = right;
 	}
 	
 	// Determine when climbing
@@ -205,7 +202,7 @@ public class Player extends Object {
 	    walledR = false;
 	}
 	
-	// Movement optiions
+	// Movement options
 	if (climbing) {	    // Vertical movement (climbing)
 	    if ((up && down) || (!up && !down)) {	// No input/holding both up and down
 		velY = 0;
@@ -250,16 +247,23 @@ public class Player extends Object {
 	    } else if (velX < 0) {
 		facingRight = false;
 	    }
-	} else if (!climbing) {	    // When not climbing (in the air)
-	    // Slide slower when pushing against the wall (and update facingRight, as well)
-	    if ((walledL && left) || (walledR && right)) {
-		velY = (velY > 3 ? velY - 2 : velY + 1);
-		facingRight = right;
-	    } else if (velY < 8) {	// Fall to a certain speed when freefalling
-		velY++;
-	    }
+	} else if (!climbing && velY < 8) {
+	    velY++;
 	}
-	
+//	} else if (!climbing) {	    // When not climbing (in the air)
+//	    // Slide slower when pushing against the wall (and update facingRight, as well)
+//	    if ((walledL && left) || (walledR && right)) {
+//		velY = (velY > 3 ? velY - 2 : velY + 1);
+//		facingRight = right;
+//	    } else if (velY < 8) {	// Fall to a certain speed when freefalling
+//		velY++;
+//	    }
+//	}
+
+	if (walledR && right) {
+	    System.out.println(velX);
+	} 
+
 	// Update position with velocity
 	setX(getX() + velX);
 	setY(getY() + velY);
