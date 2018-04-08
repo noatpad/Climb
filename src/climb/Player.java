@@ -14,6 +14,8 @@ public class Player extends Object {
     private boolean facingRight;					// Boolean when facing right
     private boolean grounded, ceiling, walledL, walledR, climbing;	// Booleans when touching a boundary
     private Boundary climbableBound;					// Boundary instance that can be climbed
+    private boolean canBoost;
+    private int boostTimer;
     
     /**
      * Player constructor
@@ -35,6 +37,9 @@ public class Player extends Object {
 	grounded = false; ceiling = false;
 	walledL = false; walledR = false;
 	climbing = false;
+	
+	canBoost = true;
+	boostTimer = 0;
     }
     
     /* METHODS */
@@ -195,11 +200,11 @@ public class Player extends Object {
 		ceiling = true;
 	    }
 	    if (l && !walledL) {	    // Left wall
-		setX((int) (b.getWallR().getX() + b.getWallR().getWidth()));
+		setX((int) (b.getWallR().getX() + b.getWallR().getWidth()) - 1);
 		velX = 0;
 		walledL = true;
 	    } else if (r && !walledR) {	    // Right wall
-		setX((int) b.getWallL().getX() - getWidth());
+		setX((int) b.getWallL().getX() - getWidth() + 1);
 		velX = 0;
 		walledR = true;
 	    }
@@ -217,7 +222,7 @@ public class Player extends Object {
 	}
 	
 	// Determine when climbing
-	if ((walledL || walledR) && canClimb()) {
+	if ((walledL || walledR) && canClimb() && boostTimer == 0) {
 	    if (keyC) {	    // Holding the key will allow climbing
 		climbing = true;
 	    } else if (climbing && !keyC) {
@@ -228,7 +233,8 @@ public class Player extends Object {
 	    walledR = false;
 	}
 	
-	// Movement options
+	// Movement
+	// TODO: Reorganize block to emphasize boostTimer / Don't climb up or down if left or right are inputted
 	if (climbing) {	    // Vertical movement (climbing)
 	    if ((up && down) || (!up && !down)) {	// No input/holding both up and down
 		velY = 0;
@@ -243,7 +249,7 @@ public class Player extends Object {
 		    velY = 0;
 		}
 	    }
-	} else {	    // Horizontal movement
+	} else if (boostTimer == 0) {	    // Horizontal movement
 	    if ((!left && !right) || (left && right)) {	    // No input/holding both left and right
 		velX /= 2;
 	    } else if (left && !walledL) {		    // Holding left (and no wall is in the way)
@@ -262,7 +268,7 @@ public class Player extends Object {
 	    }
 	}
 	
-	// Jump options
+	// Jump manuevers
 	if (lvl.getKeyMan().typed(KeyEvent.VK_SPACE)) {
 	    if (grounded) {
 		grounded = false;
@@ -273,15 +279,46 @@ public class Player extends Object {
 	}
 	
 	// Extra stuff
-	if (grounded) {		// When on the ground
+	if (grounded && boostTimer == 0) {		// When on the ground
 	    // Update facingRight depending on 'velX'
 	    if (velX > 0) {
 		facingRight = true;
 	    } else if (velX < 0) {
 		facingRight = false;
 	    }
-	} else if (!climbing && velY < 8) {
+	    // Allow boosting again
+	    canBoost = true;
+	} else if (boostTimer == 0 && !climbing && velY < 8) {
 	    velY++;
+	}
+	
+	// Boost
+	if (boostTimer > 0) {	    // Timer is used to disable gravity and movement
+	    boostTimer--;
+	}
+	if (lvl.getKeyMan().typed(KeyEvent.VK_X) && canBoost) {
+	    boostTimer = 5;
+	    canBoost = false;
+	    walledL = false; walledR = false; climbing = false;
+	    velX = 0; velY = 0;
+	    
+	    int direction;
+	    if (!up && !down && !left && !right) {	// Special case where no direction is inputed, so go forward depending on 'facingRight'
+		direction = (facingRight ? 1 : -1);
+	    } else {
+		direction = (left ? -1 : 0) + (right ? 1 : 0);
+	    }
+	    if (direction < 0) {
+		velX = -12;
+	    } else if (direction > 0) {
+		velX = 12;
+	    }
+	    direction = (up ? -1 : 0) + (down ? 1 : 0);
+	    if (direction < 0) {
+		velY = -12;
+	    } else if (direction > 0) {
+		velY = 12;
+	    }
 	}
 
 	// Update position with velocity
