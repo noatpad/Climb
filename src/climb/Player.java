@@ -293,6 +293,7 @@ public class Player extends Object {
 	}
 	
 	// Boost
+	// TODO: Minimize distance if boosting diagonally
 	if (boostTimer > 0) {	    // Timer is used to disable gravity and movement
 	    boostTimer--;
 	}
