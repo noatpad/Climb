@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 
 public class Files {
     /**
@@ -33,26 +32,50 @@ public class Files {
 	    line = br.readLine();
 	    x = Integer.parseInt(line);
 	    for (int i = 0; i < x; i++) {	// Repeat for each area
-		// Read number of boundaries in room
-		lvl.getLevelBounds().add(new ArrayList<>());
-		line = br.readLine();
-		y = Integer.parseInt(line);
+		line = br.readLine();	    // Skip empty line
 		
-		// Read spawn point position in room
+		lvl.getAreas().add(new Area());
+		
+		// Read room position
 		line = br.readLine();
 		elements = line.split(",");
-		lvl.getSpawnX().add(Integer.parseInt(elements[0]));
-		lvl.getSpawnY().add(Integer.parseInt(elements[1]));
+		lvl.getAreas().get(i).setPosX(Integer.parseInt(elements[0]));
+		lvl.getAreas().get(i).setPosY(Integer.parseInt(elements[1]));
 		
+		// Read spawn point of room
+		line = br.readLine();
+		elements = line.split(",");
+		lvl.getAreas().get(i).setSpawnX(Integer.parseInt(elements[0]));
+		lvl.getAreas().get(i).setSpawnY(Integer.parseInt(elements[1]));
+		
+		// Read number of boundaries in room
+		line = br.readLine();
+		y = Integer.parseInt(line);
 		for (int j = 0; j < y; j++) {	    // Repeat for each boundary
 		    // Read boundary dimensions
 		    line = br.readLine();
 		    elements = line.split(",");
-		    lvl.getLevelBounds().get(i).add(new Boundary(
+		    lvl.getAreas().get(i).getBounds().add(new Boundary(
 			    Integer.parseInt(elements[0]), 
 			    Integer.parseInt(elements[1]), 
 			    Integer.parseInt(elements[2]), 
 			    Integer.parseInt(elements[3])));
+		}
+		
+		// Read number of load zones in room
+		line = br.readLine();
+		y = Integer.parseInt(line);
+		
+		for (int j = 0; j < y; j++) {	    // Repeat for each load zone
+		    // Read load zone dimensions
+		    line = br.readLine();
+		    elements = line.split(",");
+		    lvl.getAreas().get(i).getLoadZones().add(new LoadZone(
+			    Integer.parseInt(elements[0]),
+			    Integer.parseInt(elements[1]),
+			    Integer.parseInt(elements[2]),
+			    Integer.parseInt(elements[3]),
+			    Integer.parseInt(elements[4])));
 		}
 	    }
 	} catch (IOException ioe) {

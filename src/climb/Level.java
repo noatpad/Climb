@@ -7,9 +7,8 @@ import java.util.ArrayList;
 
 public class Level {
     private Game game;
-    private ArrayList<ArrayList<Boundary>> levelBounds;
-    private ArrayList<Boundary> areaBounds;
-    private ArrayList<Integer> spawnX, spawnY;
+    private ArrayList<Area> areas;
+    private Area currentArea;
     private Player player;
     
     /**
@@ -18,13 +17,11 @@ public class Level {
      */
     Level(Game game, int lvlNum, int areaNum) {
 	this.game = game;
-	levelBounds = new ArrayList<>();
-	areaBounds = new ArrayList<>();
-	spawnX = new ArrayList<>(); spawnY = new ArrayList<>();
-	player = new Player(0, 0, 30, 50, this);
+	areas = new ArrayList<>();
 
 	Files.loadLevel(this, lvlNum, areaNum);
 	loadArea(areaNum);
+	player = new Player(currentArea.getSpawnX(), currentArea.getSpawnY(), 30, 50, this, currentArea);
     }
     
     /* GETTERS */
@@ -38,35 +35,11 @@ public class Level {
     }
 
     /**
-     * levelBounds Getter
-     * @return levelBounds
+     * areas Getter
+     * @return areas
      */
-    public ArrayList<ArrayList<Boundary>> getLevelBounds() {
-	return levelBounds;
-    }
-
-    /**
-     * bounds Getter
-     * @return bounds
-     */
-    public ArrayList<Boundary> getBounds() {
-	return areaBounds;
-    }
-
-    /**
-     * spawnX Getter
-     * @return spawnX
-     */
-    public ArrayList<Integer> getSpawnX() {
-	return spawnX;
-    }
-
-    /**
-     * spawnY Getter
-     * @return spawnY
-     */
-    public ArrayList<Integer> getSpawnY() {
-	return spawnY;
+    public ArrayList<Area> getAreas() {
+	return areas;
     }
 
     /**
@@ -84,9 +57,7 @@ public class Level {
      * @param areaNum Area number of the level
      */
     public void loadArea(int areaNum) {
-	areaBounds = levelBounds.get(areaNum);
-	player.setX(spawnX.get(areaNum));
-	player.setY(spawnY.get(areaNum));
+	currentArea = areas.get(areaNum);
     }
     
     public void tick() {
@@ -97,9 +68,7 @@ public class Level {
 	g.setColor(Color.black);
 	g.fillRect(0, 0, game.getWidth(), game.getHeight());
 	
-	for (Boundary b : areaBounds) {
-	    b.render(g);
-	}
+	currentArea.render(g);
 	
 	player.render(g);
     }

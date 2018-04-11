@@ -9,6 +9,7 @@ import java.awt.geom.Line2D;
 
 public class Player extends Object {
     private Level lvl;							// Current level instance
+    private Area area;							// Current area instance
     private Rectangle box, ledgeBox;					// Collision box & "ledge" box
     private int velX, velY;						// Velocity
     private boolean facingRight;					// Boolean when facing right
@@ -25,9 +26,10 @@ public class Player extends Object {
      * @param height - Height of player
      * @param lvl - Level instance
      */
-    public Player(int x, int y, int width, int height, Level lvl) {
+    public Player(int x, int y, int width, int height, Level lvl, Area area) {
 	super(x, y, width, height);
 	this.lvl = lvl;
+	this.area = area;
 	
 	box = new Rectangle(x, y, width, height);
 	ledgeBox = new Rectangle(x + width / 2, y + height / 5, 1, 3 * height / 5);
@@ -95,6 +97,7 @@ public class Player extends Object {
     /**
      * Event when player jumps off a wall
      */
+    // TODO: Wall jumping without already climbing will give one kind of jump, already climbing will allow different options 
     public void wallJump() {
 	if (facingRight) {
 	    velX = -6;
@@ -140,7 +143,7 @@ public class Player extends Object {
 	box.y = getY() + velY;
 	
 	// Boundary collision detection
-	for (Boundary b : lvl.getBounds()) {
+	for (Boundary b : area.getBounds()) {
 	    // Temporary booleans for walledL, walledR, grounded, & hitting the ceiling (resets for each boundary)
 	    boolean l = false, r = false, g = false, c = false;
 	    
@@ -269,6 +272,7 @@ public class Player extends Object {
 	}
 	
 	// Jump manuevers
+	// TODO: The amount of time holding the jump button will affect the height and time in the air
 	if (lvl.getKeyMan().typed(KeyEvent.VK_SPACE)) {
 	    if (grounded) {
 		grounded = false;
