@@ -34,7 +34,7 @@ public class Files {
 	    for (int i = 0; i < x; i++) {	// Repeat for each area
 		line = br.readLine();	    // Skip empty line
 		
-		lvl.getAreas().add(new Area());
+		lvl.getAreas().add(new Area(i));
 		
 		// Read room position
 		line = br.readLine();
@@ -67,7 +67,7 @@ public class Files {
 		y = Integer.parseInt(line);
 		
 		for (int j = 0; j < y; j++) {	    // Repeat for each load zone
-		    // Read load zone dimensions
+		    // Read load zone dimensions and room to transport to
 		    line = br.readLine();
 		    elements = line.split(",");
 		    lvl.getAreas().get(i).getLoadZones().add(new LoadZone(

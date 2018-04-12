@@ -142,6 +142,14 @@ public class Player extends Object {
 	box.x = getX() + velX;
 	box.y = getY() + velY;
 	
+	for (LoadZone l : area.getLoadZones()) {
+	    if (l.getLoadLine().intersects(box)) {
+		lvl.loadArea(l.getToArea());
+		area = lvl.getCurrentArea();
+		break;
+	    }
+	}
+	
 	// Boundary collision detection
 	for (Boundary b : area.getBounds()) {
 	    // Temporary booleans for walledL, walledR, grounded, & hitting the ceiling (resets for each boundary)

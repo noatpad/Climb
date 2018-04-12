@@ -21,6 +21,7 @@ public class Level {
 
 	Files.loadLevel(this, lvlNum, areaNum);
 	loadArea(areaNum);
+	System.out.println(areas.size());
 	player = new Player(currentArea.getSpawnX(), currentArea.getSpawnY(), 30, 50, this, currentArea);
     }
     
@@ -40,6 +41,10 @@ public class Level {
      */
     public ArrayList<Area> getAreas() {
 	return areas;
+    }
+
+    public Area getCurrentArea() {
+	return currentArea;
     }
 
     /**

@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 
 public class Area {
+    private int roomID;
     private int posX, posY, spawnX, spawnY;
     private ArrayList<Boundary> bounds;
     private ArrayList<LoadZone> loadZones;
@@ -12,7 +13,8 @@ public class Area {
     /**
      * Area Constructor
      */
-    public Area() {
+    public Area(int roomID) {
+	this.roomID = roomID;
 	bounds = new ArrayList<>();
 	loadZones = new ArrayList<>();
     }

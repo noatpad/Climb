@@ -18,6 +18,14 @@ public class LoadZone {
 	loadLine = new Line2D.Float(x1, y1, x2, y2);
 	this.toArea = toArea;
     }
+
+    public Line2D getLoadLine() {
+	return loadLine;
+    }
+
+    public int getToArea() {
+	return toArea;
+    }
     
     public void render(Graphics g) {
 	g.setColor(Color.green);
