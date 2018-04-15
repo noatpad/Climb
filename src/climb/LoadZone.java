@@ -7,16 +7,22 @@ import java.awt.geom.Line2D;
 
 public class LoadZone {
     private int x1, y1, x2, y2;
+    private int direction;
     private Line2D loadLine;
     private int toArea;
 
-    public LoadZone(int x1, int y1, int x2, int y2, int toArea) {
+    public LoadZone(int x1, int y1, int x2, int y2, int direction, int toArea) {
 	this.x1 = x1;
 	this.y1 = y1;
 	this.x2 = x2;
 	this.y2 = y2;
+	this.direction = direction;
 	loadLine = new Line2D.Float(x1, y1, x2, y2);
 	this.toArea = toArea;
+    }
+
+    public int getDirection() {
+	return direction;
     }
 
     public Line2D getLoadLine() {

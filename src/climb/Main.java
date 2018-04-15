@@ -10,7 +10,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Game g = new Game("Climb", 768, 1200);
+        Game g = new Game("Climb", 780, 1200);
 	g.start();
     }
 }

@@ -10,6 +10,7 @@ public class Level {
     private ArrayList<Area> areas;
     private Area currentArea;
     private Player player;
+    private boolean transition;
     
     /**
      * Level Constructor
@@ -18,14 +19,24 @@ public class Level {
     Level(Game game, int lvlNum, int areaNum) {
 	this.game = game;
 	areas = new ArrayList<>();
+	transition = false;
 
 	Files.loadLevel(this, lvlNum, areaNum);
-	loadArea(areaNum);
-	System.out.println(areas.size());
+	currentArea = areas.get(areaNum);
+	Camera.levelInit(currentArea);
 	player = new Player(currentArea.getSpawnX(), currentArea.getSpawnY(), 30, 50, this, currentArea);
+//	posX = currentArea.getPosX(); posY = currentArea.getPosY();
     }
     
-    /* GETTERS */
+    /* SETTERS AND GETTERS */
+
+    public void setTransition(boolean transition) {
+	this.transition = transition;
+    }
+
+    public Game getGame() {
+	return game;
+    }
     
     /**
      * keyMan Getter
@@ -57,23 +68,63 @@ public class Level {
     
     /* METHODS */
     
-    /**
-     * Loads the specified area for the first time
-     * @param areaNum Area number of the level
-     */
-    public void loadArea(int areaNum) {
-	currentArea = areas.get(areaNum);
+    public void startTransition(LoadZone lz) {
+	currentArea = areas.get(lz.getToArea());
+	transition = true;
+     }
+    
+    private void transition() {
+	boolean h = (Camera.x == currentArea.getPosX()), v = (Camera.y == currentArea.getPosY());
+	if (!h) {
+	    if (Math.abs(Camera.x - currentArea.getPosX()) >= 4) {
+		Camera.x += (currentArea.getPosX() - Camera.x) / 4;
+		if (Camera.x < currentArea.getPosX()) {
+		    player.setX(player.getX() + (currentArea.getPosX() - player.getX()) / 4);
+		} else {
+		    player.setX(player.getX() + (currentArea.getPosX() + game.getWidth() - player.getX() - player.getWidth()) / 4);
+		}
+	    } else {
+		Camera.x += currentArea.getPosX() > Camera.x ? 1 : -1;
+		player.setX(player.getX() + (currentArea.getPosX() > Camera.x ? 1 : -1));
+	    }
+	}
+	if (!v) {
+	    if (Math.abs(Camera.y - currentArea.getPosY()) >= 4) {
+		Camera.y += (currentArea.getPosY() - Camera.y) / 4;
+		if (Camera.y < currentArea.getPosY()) {
+		    player.setY(player.getY() + (currentArea.getPosY() - player.getY()) / 4);
+		} else {
+		    player.setY(player.getY() + (currentArea.getPosY() + game.getHeight() - player.getY() - player.getHeight()) / 4);
+		}
+	    } else {
+		Camera.y += currentArea.getPosY() > Camera.y ? 1 : -1;
+		player.setY(player.getY() + (currentArea.getPosY() > Camera.y ? 1 : -1));
+	    }
+	}
+	
+	player.updateBoxes();
+	if (h && v) {
+	    player.setArea(currentArea);
+	    transition = false;
+	}
     }
     
     public void tick() {
-	player.tick();
+	if (transition) {
+	    transition();
+	} else {
+	    player.tick();
+	}
     }
     
     public void render(Graphics g) {
+	g.translate(-Camera.x, -Camera.y);
 	g.setColor(Color.black);
-	g.fillRect(0, 0, game.getWidth(), game.getHeight());
+	g.fillRect(0, 0, game.getWidth() * 2, game.getHeight() * 2);
 	
-	currentArea.render(g);
+	if (!transition) {
+	    currentArea.render(g);
+	}
 	
 	player.render(g);
     }

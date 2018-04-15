@@ -25,6 +25,7 @@ public class Player extends Object {
      * @param width - Width of player
      * @param height - Height of player
      * @param lvl - Level instance
+     * @param area - Area instance
      */
     public Player(int x, int y, int width, int height, Level lvl, Area area) {
 	super(x, y, width, height);
@@ -42,6 +43,12 @@ public class Player extends Object {
 	
 	canBoost = true;
 	boostTimer = 0;
+    }
+    
+    /* GETTERS AND SETTERS */
+
+    public void setArea(Area area) {
+	this.area = area;
     }
     
     /* METHODS */
@@ -144,9 +151,19 @@ public class Player extends Object {
 	
 	for (LoadZone l : area.getLoadZones()) {
 	    if (l.getLoadLine().intersects(box)) {
-		lvl.loadArea(l.getToArea());
-		area = lvl.getCurrentArea();
-		break;
+		boolean good = false;
+		switch (l.getDirection()) {
+		    case 0: good = velY < 0; break;
+		    case 1: good = velX > 0; break;
+		    case 2: good = velY > 0; break;
+		    case 3: good = velX < 0; break;
+		    default: break;
+		}
+		if (good) {
+		    area = null;
+		    lvl.startTransition(l);
+		    return;
+		}
 	    }
 	}
 	

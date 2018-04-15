@@ -108,6 +108,7 @@ public class Game implements Runnable {
     private void init() {
 	disp = new Display(title, height, width);
 	Assets.firstInit();
+	Camera.menuInit();
 	
 	disp.getCanvas().createBufferStrategy(3);
 	bs = disp.getCanvas().getBufferStrategy();

@@ -56,8 +56,8 @@ public class Files {
 		    line = br.readLine();
 		    elements = line.split(",");
 		    lvl.getAreas().get(i).getBounds().add(new Boundary(
-			    Integer.parseInt(elements[0]), 
-			    Integer.parseInt(elements[1]), 
+			    Integer.parseInt(elements[0]) + lvl.getAreas().get(i).getPosX(), 
+			    Integer.parseInt(elements[1]) + lvl.getAreas().get(i).getPosY(), 
 			    Integer.parseInt(elements[2]), 
 			    Integer.parseInt(elements[3])));
 		}
@@ -67,19 +67,46 @@ public class Files {
 		y = Integer.parseInt(line);
 		
 		for (int j = 0; j < y; j++) {	    // Repeat for each load zone
-		    // Read load zone dimensions and room to transport to
+		    // Read load zone direction, dimensions, and room to transport to
+		    int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
 		    line = br.readLine();
 		    elements = line.split(",");
+		    switch(elements[0]) {
+			case "0":	// top part of the screen
+			    x1 = Integer.parseInt(elements[1]);
+			    x2 = Integer.parseInt(elements[2]);
+			    y1 = y2 = 0;
+			    break;
+			case "1":	// right part of the screen
+			    x1 = x2 = lvl.getGame().getWidth();
+			    y1 = Integer.parseInt(elements[1]);
+			    y2 = Integer.parseInt(elements[2]);
+			    break;
+			case "2":	// bottom part of the screen
+			    x1 = Integer.parseInt(elements[1]);
+			    x2 = Integer.parseInt(elements[2]);
+			    y1 = y2 = lvl.getGame().getHeight();
+			    break;
+			case "3":	// left part of the screen
+			    x1 = x2 = 0;
+			    y1 = Integer.parseInt(elements[1]);
+			    y2 = Integer.parseInt(elements[2]);
+			    break;
+			default: 
+			    System.err.println("ERROR: Couldn't read load zone direction! " + elements[0]);
+			    break;
+		    }
 		    lvl.getAreas().get(i).getLoadZones().add(new LoadZone(
+			    x1 + lvl.getAreas().get(i).getPosX(),
+			    y1 + lvl.getAreas().get(i).getPosY(),
+			    x2 + lvl.getAreas().get(i).getPosX(),
+			    y2 + lvl.getAreas().get(i).getPosY(),
 			    Integer.parseInt(elements[0]),
-			    Integer.parseInt(elements[1]),
-			    Integer.parseInt(elements[2]),
-			    Integer.parseInt(elements[3]),
-			    Integer.parseInt(elements[4])));
+			    Integer.parseInt(elements[3])));
 		}
 	    }
 	} catch (IOException ioe) {
-	    System.err.println("Error: Unable to find level file?! " + ioe.toString());
+	    System.err.println("ERROR: Unable to find level file?! " + ioe.toString());
 	}
     }
 }
