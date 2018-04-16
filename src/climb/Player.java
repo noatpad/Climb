@@ -86,7 +86,7 @@ public class Player extends Object {
     /**
      * Event when player climbs to the top of a wall
      */
-    public void ledgeClimb() {
+    private void ledgeClimb() {
 	// TODO: Develop this more instead of a 1-frame position change
 	if (getX() < climbableBound.x) {
 	    setX(climbableBound.x + 1);
@@ -105,7 +105,7 @@ public class Player extends Object {
      * Event when player jumps off a wall
      */
     // TODO: Wall jumping without already climbing will give one kind of jump, already climbing will allow different options 
-    public void wallJump() {
+    private void wallJump() {
 	if (facingRight) {
 	    velX = -6;
 	    walledR = false;
@@ -322,32 +322,57 @@ public class Player extends Object {
 	}
 	
 	// Boost
-	// TODO: Minimize distance if boosting diagonally
 	if (boostTimer > 0) {	    // Timer is used to disable gravity and movement
 	    boostTimer--;
+	    if (boostTimer == 0) {
+		velX /= 2;
+		velY /= 2;
+	    }
 	}
 	if (lvl.getKeyMan().typed(KeyEvent.VK_X) && canBoost) {
-	    boostTimer = 5;
+	    boostTimer = 9;
 	    canBoost = false;
 	    walledL = false; walledR = false; climbing = false;
 	    velX = 0; velY = 0;
 	    
-	    int direction;
-	    if (!up && !down && !left && !right) {	// Special case where no direction is inputed, so go forward depending on 'facingRight'
-		direction = (facingRight ? 1 : -1);
-	    } else {
-		direction = (left ? -1 : 0) + (right ? 1 : 0);
-	    }
-	    if (direction < 0) {
-		velX = -12;
-	    } else if (direction > 0) {
-		velX = 12;
-	    }
-	    direction = (up ? -1 : 0) + (down ? 1 : 0);
-	    if (direction < 0) {
-		velY = -12;
-	    } else if (direction > 0) {
-		velY = 12;
+	    /* Direction integer. The number represents a direction of the numpad-direction notation
+		1   2	3
+		4   5	6
+		7   8	9
+	    */
+	    int dir = 5 + (left ? -1 : 0) + (right ? 1 : 0) + (up ? -3 : 0) + (down ? 3 : 0);
+	    
+	    switch (dir) {
+		case 1:	    // up-left
+		    velX = -10;
+		    velY = -10;
+		    break;
+		case 2:	    // up
+		    velY = -13;
+		    break;
+		case 3:	    // up-right
+		    velX = 10;
+		    velY = -10;
+		    break;
+		case 4:	    // left
+		    velX = -13;
+		    break;
+		case 6:	    // right
+		    velX = 13;
+		    break;
+		case 7:	    // down-left
+		    velX = -10;
+		    velY = 10;
+		    break;
+		case 8:	    // down
+		    velY = 13;
+		    break;
+		case 9:	    // down-right
+		    velX = 10;
+		    velY = 10;
+		    break;
+		default:    // No direction inputted (boost forward based on 'facingRight')
+		    velX = facingRight ? 12 : -12;
 	    }
 	}
 
