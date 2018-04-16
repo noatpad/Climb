@@ -11,6 +11,15 @@ public class LoadZone {
     private Line2D loadLine;
     private int toArea;
 
+    /**
+     * LoadZone Constructor
+     * @param x1 - X coordinate of starting point
+     * @param y1 - Y coordinate of starting point
+     * @param x2 - X coordinate of ending point
+     * @param y2 - Y coordinate of ending point
+     * @param direction - Player direction necessary to travel "towards" LoadZone
+     * @param toArea - Area to transport to
+     */
     public LoadZone(int x1, int y1, int x2, int y2, int direction, int toArea) {
 	this.x1 = x1;
 	this.y1 = y1;
@@ -20,15 +29,29 @@ public class LoadZone {
 	loadLine = new Line2D.Float(x1, y1, x2, y2);
 	this.toArea = toArea;
     }
+    
+    /* GETTERS */
 
+    /**
+     * direction Getter
+     * @return direction
+     */
     public int getDirection() {
 	return direction;
     }
 
+    /**
+     * loadLine Getter
+     * @return loadLine
+     */
     public Line2D getLoadLine() {
 	return loadLine;
     }
 
+    /**
+     * toArea Getter
+     * @return toArea
+     */
     public int getToArea() {
 	return toArea;
     }

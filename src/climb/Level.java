@@ -25,15 +25,22 @@ public class Level {
 	currentArea = areas.get(areaNum);
 	Camera.levelInit(currentArea);
 	player = new Player(currentArea.getSpawnX(), currentArea.getSpawnY(), 30, 50, this, currentArea);
-//	posX = currentArea.getPosX(); posY = currentArea.getPosY();
     }
     
     /* SETTERS AND GETTERS */
 
+    /**
+     * transition Setter
+     * @param transition to modify 
+     */
     public void setTransition(boolean transition) {
 	this.transition = transition;
     }
 
+    /**
+     * game Getter
+     * @return game
+     */
     public Game getGame() {
 	return game;
     }
@@ -54,6 +61,10 @@ public class Level {
 	return areas;
     }
 
+    /**
+     * currentArea Getter
+     * @return currentArea
+     */
     public Area getCurrentArea() {
 	return currentArea;
     }
@@ -68,14 +79,21 @@ public class Level {
     
     /* METHODS */
     
+    /**
+     * Used to start transition between rooms/areas
+     * @param lz - Triggered LoadZone by player. Used to update 'currentArea'
+     */
     public void startTransition(LoadZone lz) {
 	currentArea = areas.get(lz.getToArea());
 	transition = true;
-     }
+    }
     
+    /**
+     * Transitioning between rooms
+     */
     private void transition() {
 	boolean h = (Camera.x == currentArea.getPosX()), v = (Camera.y == currentArea.getPosY());
-	if (!h) {
+	if (!h) {	// Horizontal translation
 	    if (Math.abs(Camera.x - currentArea.getPosX()) >= 4) {
 		Camera.x += (currentArea.getPosX() - Camera.x) / 4;
 		if (Camera.x < currentArea.getPosX()) {
@@ -88,7 +106,7 @@ public class Level {
 		player.setX(player.getX() + (currentArea.getPosX() > Camera.x ? 1 : -1));
 	    }
 	}
-	if (!v) {
+	if (!v) {	// Vertical translation
 	    if (Math.abs(Camera.y - currentArea.getPosY()) >= 4) {
 		Camera.y += (currentArea.getPosY() - Camera.y) / 4;
 		if (Camera.y < currentArea.getPosY()) {
@@ -103,8 +121,10 @@ public class Level {
 	}
 	
 	player.updateBoxes();
+	// When the camera is at the right spot, go back to regular gameplay (update Area instance in Player and allow boosting again)
 	if (h && v) {
 	    player.setArea(currentArea);
+	    player.setCanBoost(true);
 	    transition = false;
 	}
     }

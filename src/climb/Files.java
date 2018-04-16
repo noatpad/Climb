@@ -36,13 +36,13 @@ public class Files {
 		
 		lvl.getAreas().add(new Area(i));
 		
-		// Read room position
+		// Read room position [x, y]
 		line = br.readLine();
 		elements = line.split(",");
 		lvl.getAreas().get(i).setPosX(Integer.parseInt(elements[0]));
 		lvl.getAreas().get(i).setPosY(Integer.parseInt(elements[1]));
 		
-		// Read spawn point of room
+		// Read spawn point of room [x, y]
 		line = br.readLine();
 		elements = line.split(",");
 		lvl.getAreas().get(i).setSpawnX(Integer.parseInt(elements[0]));
@@ -52,7 +52,7 @@ public class Files {
 		line = br.readLine();
 		y = Integer.parseInt(line);
 		for (int j = 0; j < y; j++) {	    // Repeat for each boundary
-		    // Read boundary dimensions
+		    // Read boundary dimensions [x, y, width, height]
 		    line = br.readLine();
 		    elements = line.split(",");
 		    lvl.getAreas().get(i).getBounds().add(new Boundary(
@@ -67,7 +67,7 @@ public class Files {
 		y = Integer.parseInt(line);
 		
 		for (int j = 0; j < y; j++) {	    // Repeat for each load zone
-		    // Read load zone direction, dimensions, and room to transport to
+		    // Read load zone direction, dimensions, and room to transport to	[direction, startPos, endPos, toArea]
 		    int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
 		    line = br.readLine();
 		    elements = line.split(",");

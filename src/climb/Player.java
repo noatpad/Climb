@@ -47,8 +47,20 @@ public class Player extends Object {
     
     /* GETTERS AND SETTERS */
 
+    /**
+     * area Setter
+     * @param area to modify 
+     */
     public void setArea(Area area) {
 	this.area = area;
+    }
+
+    /**
+     * canBoost Setter
+     * @param canBoost to modify 
+     */
+    public void setCanBoost(boolean canBoost) {
+	this.canBoost = canBoost;
     }
     
     /* METHODS */
@@ -149,8 +161,10 @@ public class Player extends Object {
 	box.x = getX() + velX;
 	box.y = getY() + velY;
 	
+	// LoadZone collision detection
 	for (LoadZone l : area.getLoadZones()) {
 	    if (l.getLoadLine().intersects(box)) {
+		// Only trigger LoadZone if moving towards it
 		boolean good = false;
 		switch (l.getDirection()) {
 		    case 0: good = velY < 0; break;
@@ -324,7 +338,7 @@ public class Player extends Object {
 	// Boost
 	if (boostTimer > 0) {	    // Timer is used to disable gravity and movement
 	    boostTimer--;
-	    if (boostTimer == 0) {
+	    if (boostTimer == 0) {	// Slow down at the last frame of boosting
 		velX /= 2;
 		velY /= 2;
 	    }
