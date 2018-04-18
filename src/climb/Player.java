@@ -11,6 +11,7 @@ public class Player extends Object {
     private Level lvl;							// Current level instance
     private Area area;							// Current area instance
     private Rectangle box, ledgeBox;					// Collision box & "ledge" box
+    private StaminaBar stamina;						// Stamina
     private int velX, velY;						// Velocity
     private boolean facingRight;					// Boolean when facing right
     private boolean grounded, ceiling, walledL, walledR, climbing;	// Booleans when touching a boundary
@@ -35,6 +36,7 @@ public class Player extends Object {
 	
 	box = new Rectangle(x, y, width, height);
 	ledgeBox = new Rectangle(x + width / 2, y + height / 5, 1, 3 * height / 5);
+	stamina = new StaminaBar(this);
 	
 	velX = 0; velY = 0;
 	facingRight = true;
@@ -64,6 +66,22 @@ public class Player extends Object {
     public void setCanBoost(boolean canBoost) {
 	this.canBoost = canBoost;
     }
+
+    /**
+     * grounded Getter
+     * @return grounded
+     */
+    public boolean isGrounded() {
+	return grounded;
+    }
+    
+    /**
+     * climbing Getter
+     * @return climbing
+     */
+    public boolean isClimbing() {
+	return climbing;
+    }
     
     /* METHODS */
     
@@ -92,8 +110,9 @@ public class Player extends Object {
 	if (climbableBound == null) {
 	    return false;
 	}
-	// Only be able to climb if ledgebox is within the wall's dimensions
-	return ledgeBox.y <= climbableBound.getWallL().y + climbableBound.getWallL().height &&
+	// Only be able to climb if ledgebox is within the wall's dimensions & have stamina
+	return stamina.gotStamina() &&
+		ledgeBox.y <= climbableBound.getWallL().y + climbableBound.getWallL().height &&
 		ledgeBox.y + ledgeBox.height >= climbableBound.getWallL().y;
     }
     
@@ -131,14 +150,19 @@ public class Player extends Object {
 		case 1:	    // left/right key will make more horizontal distance when jumping
 		    velX = -8;
 		    velY = -10;
+		    stamina.useStamina(4);
 		    break;
 		case 2:	    // up key will make almost vertical jumps
 		    velX = -1;
 		    velY = -13;
+		    stamina.useStamina(10);
 		    break;
 		default:    // wall jumps without holding to a wall or no direction inputted will result in a regular diagonal jump
 		    velX = -6;
 		    velY = -12;
+		    if (climbing) {
+			stamina.useStamina(4);
+		    }
 		    break;
 	    }
 	    walledR = false;
@@ -151,14 +175,19 @@ public class Player extends Object {
 		case 1:
 		    velX = 8;
 		    velY = -10;
+		    stamina.useStamina(4);
 		    break;
 		case 2:
 		    velX = 1;
 		    velY = -13;
+		    stamina.useStamina(10);
 		    break;
 		default:
 		    velX = 6;
 		    velY = -12;
+		    if (climbing) {
+			stamina.useStamina(4);
+		    }
 		    break;
 	    }
 	    walledL = false;
@@ -322,11 +351,18 @@ public class Player extends Object {
 		if (ledgeBox.y + ledgeBox.height + velY < climbableBound.getWallL().y) {
 		    ledgeClimb();
 		}
+		stamina.setTickCounter(stamina.getTickCounter() + 1);
 	    } else if (down && !grounded) {		// Holding down (and not at the ground)
 		velY = 2;
 		if (ledgeBox.y + velY > climbableBound.getWallL().y + climbableBound.getWallL().height) {
 		    velY = 0;
 		}
+		stamina.setTickCounter(stamina.getTickCounter() - 1);
+	    }
+	    
+	    // If you run out of stamina while climbing, go back into a falling state
+	    if (!stamina.gotStamina()) {
+		climbing = false;
 	    }
 	} else if (boostTimer == 0 && wallJumpTimer == 0) {	    // Horizontal movement
 	    if ((!left && !right) || (left && right)) {	    // No input/holding both left and right
@@ -438,6 +474,9 @@ public class Player extends Object {
 	
 	// Collision position update
 	updateBoxes();
+	
+	// Stamina bar tick()
+	stamina.tick();
     }
 
     @Override
@@ -446,5 +485,6 @@ public class Player extends Object {
 	g.drawRect(box.x, box.y, box.width, box.height);
 	g.setColor(Color.magenta);
 	g.drawRect(ledgeBox.x, ledgeBox.y, ledgeBox.width, ledgeBox.height);
+	stamina.render(g);
     }
 }
