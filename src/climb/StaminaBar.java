@@ -29,7 +29,7 @@ public class StaminaBar {
 	percent = 1;
 	
 	tickCounter = 0;
-	displayTimer = 0;
+	displayTimer = 10;
     }
 
     /* SETTERS AND GETTERS */

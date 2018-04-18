@@ -325,7 +325,7 @@ public class Player extends Object {
 	
 	// When sliding down the wall, slow down descent (and update 'facingRight')
 	if (!climbing && ((walledL && left) || walledR && right)) {
-	    velY = (velY > 3 ? velY - 2 : velY + 1);
+	    velY = (velY > 2 ? velY - 2 : velY);
 	    facingRight = right;
 	}
 	
@@ -369,16 +369,16 @@ public class Player extends Object {
 		velX /= 1.4 - (velY != 0 ? .3 : 0);
 	    } else if (left && !walledL) {		    // Holding left (and no wall is in the way)
 		walledR = false;
-		velX -= (velX > -6 ? 2 : 0);
+		velX -= (velX > -4 ? 2 : 0);
 	    } else if (right && !walledR) {		    // Holding right (and no wall is in the way)
 		walledL = false;
-		velX += (velX < 6 ? 2 : 0);
+		velX += (velX < 4 ? 2 : 0);
 	    }
 	    
 	    // velX regulation if going too fast
-	    if (velX > 6) {
+	    if (velX > 4) {
 		velX--;
-	    } else if (velX < -6) {
+	    } else if (velX < -4) {
 		velX++;
 	    }
 	}
@@ -393,7 +393,7 @@ public class Player extends Object {
 	if (lvl.getKeyMan().typed(KeyEvent.VK_SPACE)) {
 	    if (grounded) {
 		grounded = false;
-		velY = -15;
+		velY = -14;
 	    } else if (walledL || walledR) {
 		wallJump(up, left, right);
 	    }
@@ -436,35 +436,35 @@ public class Player extends Object {
 	    
 	    switch (dir) {
 		case 1:	    // up-left
-		    velX = -10;
-		    velY = -10;
+		    velX = -8;
+		    velY = -8;
 		    break;
 		case 2:	    // up
-		    velY = -13;
-		    break;
-		case 3:	    // up-right
-		    velX = 10;
 		    velY = -10;
 		    break;
+		case 3:	    // up-right
+		    velX = 8;
+		    velY = -8;
+		    break;
 		case 4:	    // left
-		    velX = -13;
+		    velX = -11;
 		    break;
 		case 6:	    // right
-		    velX = 13;
+		    velX = 11;
 		    break;
 		case 7:	    // down-left
-		    velX = -10;
-		    velY = 10;
+		    velX = -8;
+		    velY = 8;
 		    break;
 		case 8:	    // down
-		    velY = 13;
-		    break;
-		case 9:	    // down-right
-		    velX = 10;
 		    velY = 10;
 		    break;
+		case 9:	    // down-right
+		    velX = 8;
+		    velY = 8;
+		    break;
 		default:    // No direction inputted (boost forward based on 'facingRight')
-		    velX = facingRight ? 12 : -12;
+		    velX = facingRight ? 11 : -11;
 	    }
 	}
 
