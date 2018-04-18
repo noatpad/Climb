@@ -72,15 +72,18 @@ public class StaminaBar {
 	if (player.isClimbing()) {	    // If player is climbing, slowly deplete stamina
 	    displayTimer = 0;
 	    tickCounter++;
-	    if (tickCounter >= 20) {	    // Happens every 20 frames (0.4 seconds)
+	    if (tickCounter >= 10) {	    // Happens every 10 frames (0.2 seconds)
 		tickCounter = 0;
-		stamina -= 2;
+		stamina--;
 	    }
 	} else {
 	    if (player.isGrounded()) {	    // Replenish stamina when on the ground
 		tickCounter = 0;
 		if (stamina < max) {
-		    stamina++;
+		    stamina += 3;
+		    if (stamina > max) {
+			stamina = max;
+		    }
 		}
 	    }
 	    
