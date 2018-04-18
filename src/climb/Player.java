@@ -17,6 +17,7 @@ public class Player extends Object {
     private Boundary climbableBound;					// Boundary instance that can be climbed
     private boolean canBoost;
     private int boostTimer;
+    private int wallJumpTimer;
     
     /**
      * Player constructor
@@ -43,6 +44,7 @@ public class Player extends Object {
 	
 	canBoost = true;
 	boostTimer = 0;
+	wallJumpTimer = 0;
     }
     
     /* GETTERS AND SETTERS */
@@ -116,20 +118,55 @@ public class Player extends Object {
     /**
      * Event when player jumps off a wall
      */
-    // TODO: Wall jumping without already climbing will give one kind of jump, already climbing will allow different options 
-    private void wallJump() {
+    private void wallJump(boolean up, boolean left, boolean right) {
+	int jumpDir = 0;
+	
+	// velX is determined depending on what wall you're jumping from
 	if (facingRight) {
-	    velX = -6;
+	    // If climbing, wall jump can be controlled further with arrow keys
+	    if (climbing) {
+		jumpDir = (left ? 1 : 0) + (up ? 2 : 0);
+	    }
+	    switch (jumpDir) {
+		case 1:	    // left/right key will make more horizontal distance when jumping
+		    velX = -8;
+		    velY = -10;
+		    break;
+		case 2:	    // up key will make almost vertical jumps
+		    velX = -1;
+		    velY = -13;
+		    break;
+		default:    // wall jumps without holding to a wall or no direction inputted will result in a regular diagonal jump
+		    velX = -6;
+		    velY = -12;
+		    break;
+	    }
 	    walledR = false;
 	    facingRight = false;
 	} else {
-	    velX = 10;
+	    if (climbing) {
+		jumpDir = (right ? 1 : 0) + (up ? 2 : 0);
+	    }
+	    switch (jumpDir) {
+		case 1:
+		    velX = 8;
+		    velY = -10;
+		    break;
+		case 2:
+		    velX = 1;
+		    velY = -13;
+		    break;
+		default:
+		    velX = 6;
+		    velY = -12;
+		    break;
+	    }
 	    walledL = false;
 	    facingRight = true;
 	}
-	velY = -12;
 	climbing = false;
 	grounded = false;
+	wallJumpTimer = 6;	// Time it takes before taking control of player con
     }
     
     /**
@@ -291,9 +328,9 @@ public class Player extends Object {
 		    velY = 0;
 		}
 	    }
-	} else if (boostTimer == 0) {	    // Horizontal movement
+	} else if (boostTimer == 0 && wallJumpTimer == 0) {	    // Horizontal movement
 	    if ((!left && !right) || (left && right)) {	    // No input/holding both left and right
-		velX /= 2;
+		velX /= 1.4 - (velY != 0 ? .3 : 0);
 	    } else if (left && !walledL) {		    // Holding left (and no wall is in the way)
 		walledR = false;
 		velX -= (velX > -6 ? 2 : 0);
@@ -310,6 +347,11 @@ public class Player extends Object {
 	    }
 	}
 	
+	// Wall jump timer
+	if (wallJumpTimer > 0) {
+	    wallJumpTimer--;
+	}
+	
 	// Jump manuevers
 	// TODO: The amount of time holding the jump button will affect the height and time in the air
 	if (lvl.getKeyMan().typed(KeyEvent.VK_SPACE)) {
@@ -317,7 +359,7 @@ public class Player extends Object {
 		grounded = false;
 		velY = -15;
 	    } else if (walledL || walledR) {
-		wallJump();
+		wallJump(up, left, right);
 	    }
 	}
 	
