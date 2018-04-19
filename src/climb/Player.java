@@ -8,17 +8,17 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.Line2D;
 
 public class Player extends Object {
-    private Level lvl;							// Current level instance
-    private Area area;							// Current area instance
-    private Rectangle box, ledgeBox;					// Collision box & "ledge" box
-    private StaminaBar stamina;						// Stamina
-    private int velX, velY;						// Velocity
-    private boolean facingRight;					// Boolean when facing right
-    private boolean grounded, ceiling, walledL, walledR, climbing;	// Booleans when touching a boundary
-    private Boundary climbableBound;					// Boundary instance that can be climbed
+    private Level lvl;									// Current level instance
+    private Area area;									// Current area instance
+    private Rectangle box, ledgeBox;							// Collision box & "ledge" box
+    private StaminaBar stamina;								// Stamina
+    private int velX, velY;								// Velocity
+    private boolean facingRight;							// Boolean when facing right
+    private boolean grounded, ceiling, walledL, walledR, climbing, jumping, wJumping;	// Booleans when touching a boundary & jumping
+    private Boundary climbableBound;							// Boundary instance that can be climbed
     private boolean canBoost;
     private int boostTimer;
-    private int wallJumpTimer;
+    private int jumpTimer, wallJumpTimer;
     
     /**
      * Player constructor
@@ -42,10 +42,11 @@ public class Player extends Object {
 	facingRight = true;
 	grounded = false; ceiling = false;
 	walledL = false; walledR = false;
-	climbing = false;
+	climbing = false; jumping = false; wJumping = false;
 	
 	canBoost = true;
 	boostTimer = 0;
+	jumpTimer = 0;
 	wallJumpTimer = 0;
     }
     
@@ -149,20 +150,23 @@ public class Player extends Object {
 	    switch (jumpDir) {
 		case 1:	    // left/right key will make more horizontal distance when jumping
 		    velX = -8;
-		    velY = -10;
+		    velY = -2;
 		    stamina.useStamina(4);
+		    wallJumpTimer = 8;
 		    break;
 		case 2:	    // up key will make almost vertical jumps
 		    velX = -1;
-		    velY = -13;
+		    velY = -7;
 		    stamina.useStamina(10);
+		    wallJumpTimer = 5;
 		    break;
 		default:    // wall jumps without holding to a wall or no direction inputted will result in a regular diagonal jump
 		    velX = -6;
-		    velY = -12;
+		    velY = -6;
 		    if (climbing) {
 			stamina.useStamina(4);
 		    }
+		    wallJumpTimer = 8;
 		    break;
 	    }
 	    walledR = false;
@@ -174,20 +178,23 @@ public class Player extends Object {
 	    switch (jumpDir) {
 		case 1:
 		    velX = 8;
-		    velY = -10;
+		    velY = -2;
 		    stamina.useStamina(4);
+		    wallJumpTimer = 8;
 		    break;
 		case 2:
 		    velX = 1;
-		    velY = -13;
+		    velY = -7;
 		    stamina.useStamina(10);
+		    wallJumpTimer = 5;
 		    break;
 		default:
 		    velX = 6;
-		    velY = -12;
+		    velY = -6;
 		    if (climbing) {
 			stamina.useStamina(4);
 		    }
+		    wallJumpTimer = 8;
 		    break;
 	    }
 	    walledL = false;
@@ -195,7 +202,6 @@ public class Player extends Object {
 	}
 	climbing = false;
 	grounded = false;
-	wallJumpTimer = 6;	// Time it takes before taking control of player con
     }
     
     /**
@@ -353,7 +359,7 @@ public class Player extends Object {
 		}
 		stamina.setTickCounter(stamina.getTickCounter() + 1);
 	    } else if (down && !grounded) {		// Holding down (and not at the ground)
-		velY = 2;
+		velY = 3;
 		if (ledgeBox.y + velY > climbableBound.getWallL().y + climbableBound.getWallL().height) {
 		    velY = 0;
 		}
@@ -383,22 +389,6 @@ public class Player extends Object {
 	    }
 	}
 	
-	// Wall jump timer
-	if (wallJumpTimer > 0) {
-	    wallJumpTimer--;
-	}
-	
-	// Jump manuevers
-	// TODO: The amount of time holding the jump button will affect the height and time in the air
-	if (lvl.getKeyMan().typed(KeyEvent.VK_SPACE)) {
-	    if (grounded) {
-		grounded = false;
-		velY = -14;
-	    } else if (walledL || walledR) {
-		wallJump(up, left, right);
-	    }
-	}
-	
 	// Extra stuff
 	if (grounded && boostTimer == 0) {		// When on the ground
 	    // Update facingRight depending on 'velX'
@@ -411,6 +401,45 @@ public class Player extends Object {
 	    canBoost = true;
 	} else if (boostTimer == 0 && !climbing && velY < 8) {
 	    velY++;
+	}
+	
+	// Jump
+	if (lvl.getKeyMan().typed(KeyEvent.VK_SPACE)) {
+	    // First spacebar press will put the player in a 'jumping' state
+	    if (grounded) {
+		velY = -8;
+		grounded = false;
+		jumping = true;
+	    } else if (walledL || walledR) {
+		wallJump(up, left, right);
+		wJumping = true;
+	    }
+	}
+	
+	// Depending on how long you hold the jump button, gravity remains unaffected to you (velY--)
+	if (jumping) {
+	    if (lvl.getKeyMan().pressed(KeyEvent.VK_SPACE) && jumpTimer < 9) {
+		velY--;
+		jumpTimer++;
+	    } else {
+		jumping = false;
+		jumpTimer = 0;
+	    }
+	}
+	if (wJumping) {
+	    if (lvl.getKeyMan().pressed(KeyEvent.VK_SPACE) && jumpTimer < 6) {
+		velY--;
+		jumpTimer++;
+	    } else {
+		wJumping = false;
+		wallJumpTimer = 0;
+		jumpTimer = 0;
+	    }
+	}
+	
+	// Wall jump timer
+	if (wallJumpTimer > 0) {
+	    wallJumpTimer--;
 	}
 	
 	// Boost
@@ -436,15 +465,15 @@ public class Player extends Object {
 	    
 	    switch (dir) {
 		case 1:	    // up-left
-		    velX = -8;
-		    velY = -8;
+		    velX = -7;
+		    velY = -7;
 		    break;
 		case 2:	    // up
 		    velY = -10;
 		    break;
 		case 3:	    // up-right
-		    velX = 8;
-		    velY = -8;
+		    velX = 7;
+		    velY = -7;
 		    break;
 		case 4:	    // left
 		    velX = -11;
@@ -453,15 +482,15 @@ public class Player extends Object {
 		    velX = 11;
 		    break;
 		case 7:	    // down-left
-		    velX = -8;
-		    velY = 8;
+		    velX = -7;
+		    velY = 7;
 		    break;
 		case 8:	    // down
 		    velY = 10;
 		    break;
 		case 9:	    // down-right
-		    velX = 8;
-		    velY = 8;
+		    velX = 7;
+		    velY = 7;
 		    break;
 		default:    // No direction inputted (boost forward based on 'facingRight')
 		    velX = facingRight ? 11 : -11;
