@@ -404,10 +404,10 @@ public class Player extends Object {
 	}
 	
 	// Jump
-	if (lvl.getKeyMan().typed(KeyEvent.VK_SPACE)) {
+	if (lvl.getKeyMan().typed(KeyEvent.VK_SPACE) && boostTimer == 0) {
 	    // First spacebar press will put the player in a 'jumping' state
 	    if (grounded) {
-		velY = -8;
+		velY = -6;
 		grounded = false;
 		jumping = true;
 	    } else if (walledL || walledR) {
