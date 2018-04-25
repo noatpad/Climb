@@ -7,12 +7,20 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
 public class Menu {
-    private Game game;							// Game instance
-    private int selected = 0;						// Selected index option in menu
-    private String mainOptions[] = {"Climb", "Options", "Credits"};	// Strings of available options
-    private int mainPosX[], mainPosY[];					// Positions of options
-    private int posOffset = 0;						// Position offset for selected option
-    private boolean offsetUp = true;					// Boolean for incrementing or decrementing posOffset
+    private Game game;				// Game instance
+    private int state, selected;		// Current state within menu / Selected index option in menu
+    /* Menu state values:
+    0 -> Main menu
+    1 -> Level select
+    2 -> Options
+    3 -> Credits
+    4 -> Entering level
+    */
+    private String mainOptions[];		// Strings of available options
+    private int mainPosX[], mainPosY[];		// Positions of options
+    private int posOffset;			// Position offset for selected option
+    private boolean offsetUp;			// Boolean for incrementing or decrementing posOffset
+    private int selectTimer;			// Tick counter for selected option
 
     /**
      * Game Constructor
@@ -20,6 +28,12 @@ public class Menu {
      */
     public Menu(Game game) {
 	this.game = game;
+	state = 0;
+	selected = 0;
+	mainOptions = new String[] {"Climb", "Options", "Credits"};
+	offsetUp = true;
+	posOffset = 0;
+	selectTimer = 0;
 	
 	mainPosX = new int[3]; mainPosY = new int[3];
 	FontMetrics fm = game.getGraphics().getFontMetrics(Assets.font.deriveFont(40f));    // FontMetrics is used to measure string lengths
@@ -32,26 +46,47 @@ public class Menu {
     
     /* METHODS */
     
-    public void tick() {
-	// Prepare level when selecting "Climb"
-	if (game.getKeyMan().typed(KeyEvent.VK_ENTER) && selected == 0) {
-	    game.prepareLevel();
-	    return;
-	}
+    private void mainMenu() {
+	// Menu Selection
 	// TODO: Work on other menu options
-	
-	// Invert offsetUp to continue selected option animation
-	if (Math.abs(posOffset) == 4) {
-	    offsetUp = !offsetUp;
+	if (game.getKeyMan().typed(KeyEvent.VK_ENTER)) {
+	    switch (selected) {
+		case 0:
+		    game.prepareLevel();
+		    return;
+		default: break;
+	    }
 	}
-	posOffset += (offsetUp ? 1 : -1);
-	
+
+	if (selectTimer >= 2) {
+	    selectTimer = 0;
+
+	    // Invert offsetUp to continue selected option animation
+	    if (Math.abs(posOffset) == 3) {
+		offsetUp = !offsetUp;
+	    }
+	    posOffset += (offsetUp ? 1 : -1);
+	}
+
 	// Change option on command
 	if (selected < 2 && game.getKeyMan().typed(KeyEvent.VK_DOWN)) {
 	    selected++;
+	    selectTimer = 0;
 	}
 	if (selected > 0 && game.getKeyMan().typed(KeyEvent.VK_UP)) {
 	    selected--;
+	    selectTimer = 0;
+	}
+
+	selectTimer++;
+    }
+    
+    public void tick() {
+	switch (state) {
+	    case 0:	// Main menu state
+		mainMenu();
+		break;
+	    default: break;
 	}
     }
     
