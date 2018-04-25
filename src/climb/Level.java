@@ -142,7 +142,6 @@ public class Level {
     public void render(Graphics g) {
 	g.translate(-Camera.x, -Camera.y);
 	g.setColor(Color.black);
-//	g.fillRect(Camera.x, Camera.y, game.getWidth(), game.getHeight());
 	g.drawImage(Assets.level_bg, Camera.x, Camera.y, null);
 	
 	if (lastArea != null) {
