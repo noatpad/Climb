@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Line2D;
+import java.awt.image.BufferedImage;
 
 public class Player extends Object {
     private Level lvl;									// Current level instance
@@ -19,18 +20,18 @@ public class Player extends Object {
     private boolean canBoost;
     private int boostTimer;
     private int jumpTimer, wallJumpTimer;
+    private Animation stand, run, jumpFall, climb, currentAnim;
+    private BufferedImage boostImg;
     
     /**
      * Player constructor
      * @param x - X coordinate of its position
      * @param y - Y coordinate of its position
-     * @param width - Width of player
-     * @param height - Height of player
      * @param lvl - Level instance
      * @param area - Area instance
      */
-    public Player(int x, int y, int width, int height, Level lvl, Area area) {
-	super(x, y, width, height);
+    public Player(int x, int y, Level lvl, Area area) {
+	super(x, y, 25, 40);
 	this.lvl = lvl;
 	this.area = area;
 	
@@ -48,6 +49,13 @@ public class Player extends Object {
 	boostTimer = 0;
 	jumpTimer = 0;
 	wallJumpTimer = 0;
+	
+	stand = new Animation(Assets.stand, 300, true);
+	run = new Animation(Assets.run, 20, true);
+	jumpFall = new Animation(Assets.jumpFall, 40, false);
+	climb = new Animation(Assets.climb, 30, true);
+	currentAnim = stand;
+	boostImg = Assets.boost[0];
     }
     
     /* GETTERS AND SETTERS */
@@ -220,6 +228,15 @@ public class Player extends Object {
 	ledgeBox.y = getY() + getHeight() / 5;
     }
     
+    private void setAnim(Animation anim) {
+	if (anim == currentAnim) {
+	    return;
+	}
+	anim.reset();
+	currentAnim = anim;
+	currentAnim.tick();
+    }
+    
     @Override
     public void tick() {
 	boolean up = lvl.getKeyMan().pressed(KeyEvent.VK_UP),
@@ -348,7 +365,6 @@ public class Player extends Object {
 	}
 	
 	// Movement
-	// TODO: Reorganize block to emphasize boostTimer / Don't climb up or down if left or right are inputted
 	if (climbing) {	    // Vertical movement (climbing)
 	    if ((up && down) || (!up && !down)) {	// No input/holding both up and down
 		velY = 0;
@@ -364,6 +380,11 @@ public class Player extends Object {
 		    velY = 0;
 		}
 		stamina.setTickCounter(stamina.getTickCounter() - 1);
+	    }
+	    
+	    setAnim(climb);
+	    if (velY != 0) {
+		climb.tick(facingRight);
 	    }
 	    
 	    // If you run out of stamina while climbing, go back into a falling state
@@ -387,6 +408,16 @@ public class Player extends Object {
 	    } else if (velX < -4) {
 		velX++;
 	    }
+	    
+	    if (grounded) {
+		if (velX == 0) {
+		    setAnim(stand);
+		    stand.tick(facingRight);
+		} else {
+		    setAnim(run);
+		    run.tick(facingRight);
+		}
+	    }
 	}
 	
 	// Extra stuff
@@ -401,6 +432,8 @@ public class Player extends Object {
 	    canBoost = true;
 	} else if (boostTimer == 0 && !climbing && velY < 8) {
 	    velY++;
+	    setAnim(jumpFall);
+	    jumpFall.tick(facingRight);
 	}
 	
 	// Jump
@@ -421,6 +454,7 @@ public class Player extends Object {
 	    if (lvl.getKeyMan().pressed(KeyEvent.VK_SPACE) && jumpTimer < 9) {
 		velY--;
 		jumpTimer++;
+		setAnim(jumpFall);
 	    } else {
 		jumping = false;
 		jumpTimer = 0;
@@ -467,6 +501,7 @@ public class Player extends Object {
 		case 1:	    // up-left
 		    velX = -7;
 		    velY = -7;
+		    facingRight = false;
 		    break;
 		case 2:	    // up
 		    velY = -10;
@@ -474,16 +509,20 @@ public class Player extends Object {
 		case 3:	    // up-right
 		    velX = 7;
 		    velY = -7;
+		    facingRight = true;
 		    break;
 		case 4:	    // left
 		    velX = -11;
+		    facingRight = false;
 		    break;
 		case 6:	    // right
 		    velX = 11;
+		    facingRight = true;
 		    break;
 		case 7:	    // down-left
 		    velX = -7;
 		    velY = 7;
+		    facingRight = false;
 		    break;
 		case 8:	    // down
 		    velY = 10;
@@ -491,10 +530,13 @@ public class Player extends Object {
 		case 9:	    // down-right
 		    velX = 7;
 		    velY = 7;
+		    facingRight = true;
 		    break;
 		default:    // No direction inputted (boost forward based on 'facingRight')
 		    velX = facingRight ? 11 : -11;
 	    }
+	    
+	    boostImg = Assets.boost[(facingRight ? 0 : 1)];
 	}
 
 	// Update position with velocity
@@ -506,14 +548,34 @@ public class Player extends Object {
 	
 	// Stamina bar tick()
 	stamina.tick();
+	
+	// Animation sets and ticks
+//	if (boostTimer == 0) {
+//	    if (grounded) {
+//		if (velX == 0) {
+//		    setAnim(stand);
+//		} else {
+//		    setAnim(run);
+//		}
+//	    } else if (climbing) {
+//		setAnim(climb);
+//	    } else {
+//		setAnim(jumpFall);
+//	    }
+//	}
     }
 
     @Override
     public void render(Graphics g) {
-	g.setColor(Color.white);
-	g.drawRect(box.x, box.y, box.width, box.height);
-	g.setColor(Color.magenta);
-	g.drawRect(ledgeBox.x, ledgeBox.y, ledgeBox.width, ledgeBox.height);
+//	g.setColor(Color.white);
+//	g.drawRect(box.x, box.y, box.width, box.height);
+//	g.setColor(Color.magenta);
+//	g.drawRect(ledgeBox.x, ledgeBox.y, ledgeBox.width, ledgeBox.height);
+	if (boostTimer == 0) {
+	    g.drawImage(currentAnim.getCurrentFrame(), getX(), getY(), null);
+	} else {
+	    g.drawImage(boostImg, getX(), getY(), null);
+	}
 	stamina.render(g);
     }
 }
