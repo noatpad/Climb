@@ -15,6 +15,9 @@ public class Assets {
     
     public static BufferedImage title_bg;
     
+    public static BufferedImage level_bg;
+    public static BufferedImage tile[];
+    
     /**
      * Initialize Assets on first load
      */
@@ -35,5 +38,16 @@ public class Assets {
      */
     public static void menuInit() {
 	title_bg = ImageLoader.loadImage("/images/title_bg.png");
+    }
+    
+    public static void levelInit() {
+	level_bg = ImageLoader.loadImage("/images/lvl_bg.png");
+	
+	tile = new BufferedImage[5];
+	tile[0] = ImageLoader.loadImage("/images/tile.png", 0, 0, 16, 16);
+	tile[1] = ImageLoader.loadImage("/images/tile.png", 16, 0, 16, 6);
+	tile[2] = ImageLoader.loadImage("/images/tile.png", 32, 0, 6, 16);
+	tile[3] = ImageLoader.loadImage("/images/tile.png", 48, 0, 16, 6);
+	tile[4] = ImageLoader.loadImage("/images/tile.png", 64, 0, 6, 16);
     }
 }

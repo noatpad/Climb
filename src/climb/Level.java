@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Level {
     private Game game;
     private ArrayList<Area> areas;
-    private Area currentArea;
+    private Area currentArea, lastArea;
     private Player player;
     private boolean transition;
     
@@ -84,6 +84,7 @@ public class Level {
      * @param lz - Triggered LoadZone by player. Used to update 'currentArea'
      */
     public void startTransition(LoadZone lz) {
+	lastArea = currentArea;
 	currentArea = areas.get(lz.getToArea());
 	transition = true;
     }
@@ -123,6 +124,7 @@ public class Level {
 	player.updateBoxes();
 	// When the camera is at the right spot, go back to regular gameplay (update Area instance in Player and allow boosting again)
 	if (h && v) {
+	    lastArea = null;
 	    player.setArea(currentArea);
 	    player.setCanBoost(true);
 	    transition = false;
@@ -140,11 +142,13 @@ public class Level {
     public void render(Graphics g) {
 	g.translate(-Camera.x, -Camera.y);
 	g.setColor(Color.black);
-	g.fillRect(0, 0, game.getWidth() * 2, game.getHeight() * 2);
+//	g.fillRect(Camera.x, Camera.y, game.getWidth(), game.getHeight());
+	g.drawImage(Assets.level_bg, Camera.x, Camera.y, null);
 	
-	if (!transition) {
-	    currentArea.render(g);
+	if (lastArea != null) {
+	    lastArea.render(g);
 	}
+	currentArea.render(g);
 	
 	player.render(g);
     }

@@ -106,8 +106,8 @@ public class Area {
 	    b.render(g);
 	}
 	
-	for (LoadZone l : loadZones) {
-	    l.render(g);
-	}
+//	for (LoadZone l : loadZones) {
+//	    l.render(g);
+//	}
     }
 }
