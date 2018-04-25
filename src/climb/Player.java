@@ -309,7 +309,7 @@ public class Player extends Object {
 		velY = 0;
 		grounded = true;
 	    } else if (c && !ceiling) {
-		setY((int) (b.getCeiling().getY()));
+		setY((int) (b.getCeiling().getY() + b.getCeiling().getHeight()));
 		velY = 0;
 		ceiling = true;
 	    }
