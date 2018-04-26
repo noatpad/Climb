@@ -8,15 +8,22 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
 public class PauseMenu {
-    private Game game;
-    private boolean paused;
-    private int exitState, state, selected;
-    private Color bgColor;
-    private FontMetrics fm;
+    private Game game;						// Game instance
+    private boolean paused;					// Boolean to determine paused state
+    private int exitState, state, selected;			// State to which to exit, current state, current selection
+    /* State values:
+    0 -> Main pause menu
+    1 -> Options menu
+    2 -> Controller config menu
+    */
+    private Color bgColor;					// Background color
+    private FontMetrics fm;					// FontMetrics instance
     
+    // Strings and positions of pause menu options
     private String pauseOptions[];
     private int pauseOptionsPosX[], pauseOptionsPosY[];
     
+    // Strings and positions of options menu options
     private String options[], values[];
     private int optionsPosX, valuesPosX[], optionsPosY[];
     
@@ -24,6 +31,12 @@ public class PauseMenu {
     private boolean offsetUp;			// Boolean for incrementing or decrementing posOffset
     private int selectTimer;			// Tick counter for selected option
 
+    /**
+     * PauseMenu Constructor
+     * @param game - Game instance
+     * @param exitState - State that menu can be in to exit pause menu altogether
+     * @param state - Current state
+     */
     public PauseMenu(Game game, int exitState, int state) {
 	this.game = game;
 	this.exitState = exitState;
@@ -56,11 +69,22 @@ public class PauseMenu {
 	}
 	
     }
+    
+    /* GETTERS */
 
+    /**
+     * paused Getter
+     * @return paused
+     */
     public boolean isPaused() {
 	return paused;
     }
     
+    /* METHODS */
+    
+    /**
+     * Main pause menu
+     */
     private void pauseMenu() {
 	if (selectTimer >= 2) {
 	    selectTimer = 0;
@@ -102,6 +126,9 @@ public class PauseMenu {
 	selectTimer++;
     }
     
+    /**
+     * Options menu (NOT YET IMPLEMENTED)
+     */
 //    private void options() {
 //	if (selected < 6 && game.getKeyMan().typed(KeyEvent.VK_DOWN)) {
 //	    selected++;

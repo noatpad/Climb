@@ -21,7 +21,7 @@ public class Assets {
     public static BufferedImage stand[], run[], jumpFall[], boost[], climb[];
     
     /**
-     * Initialize Assets on first load
+     * Initialize assets on first load
      */
     public static void firstInit() {
 	// Load font "Montserrat"
@@ -37,12 +37,15 @@ public class Assets {
     }
     
     /**
-     * Initialize Assets for the menu
+     * Initialize main menu assets
      */
     public static void menuInit() {
 	title_bg = ImageLoader.loadImage("/images/title_bg.png");
     }
     
+    /**
+     * Initializes level assets
+     */
     public static void levelInit() {
 	level_bg = ImageLoader.loadImage("/images/lvl_bg.png");
 	
@@ -54,6 +57,9 @@ public class Assets {
 	tile[4] = ImageLoader.loadImage("/images/tile.png", 64, 0, 6, 16);
     }
     
+    /**
+     * Initializes player assets
+     */
     public static void playerInit() {
 	Spritesheet ss = new Spritesheet(ImageLoader.loadImage("/images/playersheet.png"));
 	stand = new BufferedImage[8];

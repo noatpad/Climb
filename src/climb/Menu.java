@@ -42,6 +42,7 @@ public class Menu {
 	
 	// TODO: Make a Textbox class to allow handling these texts easier
 	
+	// Positions for main menu elements
 	mainOptions = new String[] {"Climb", "Options", "Credits"};
 	mainPosX = new int[3]; mainPosY = new int[3];
 	FontMetrics fm = game.getGraphics().getFontMetrics(Assets.font.deriveFont(40f));    // FontMetrics is used to measure string lengths
@@ -51,6 +52,7 @@ public class Menu {
 	    mainPosY[i] = (int) (1.4 * fm.getAscent() + (i == 0 ? 30 : mainPosY[i - 1]));
 	}
 	
+	// Positions for credits elements
 	credits = new String[] {
 	    "Daniel Hernandez",
 	    "Leader, Programming, Art",
@@ -84,6 +86,9 @@ public class Menu {
     
     /* METHODS */
     
+    /**
+     * Main menu
+     */
     private void mainMenu() {
 	if (selectTimer >= 2) {
 	    selectTimer = 0;
@@ -110,21 +115,19 @@ public class Menu {
 	// Menu Selection
 	if (game.getKeyMan().typed(KeyEvent.VK_ENTER)) {
 	    switch (selected) {
-		case 0:
-		    game.prepareLevel();
+		case 0:	    // Supposed to be level select
+		    game.prepareLevel(1);
 		    return;
-		case 1:
+		case 1:	    // Options
 		    options = new PauseMenu(game, 1, 1);
 		    state = 2;
-		    return;
-		case 2:
+		    break;
+		case 2:	    // Credits
 		    state = 3;
-		    return;
-		case 3:
-		    game.setGameState(1);
-		    return;
+		    break;
 		default: break;
 	    }
+	    selected = 0;
 	}
     }
     
@@ -152,8 +155,8 @@ public class Menu {
     
     public void render(Graphics g) {
 	g.drawImage(Assets.title_bg, 0, 0, game.getWidth(), game.getHeight(), null);
-	
 	g.setColor(Color.white);
+	
 	switch (state) {
 	    case 0:	// Main menu
 		g.setFont(Assets.font.deriveFont(40f));

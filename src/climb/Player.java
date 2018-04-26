@@ -548,21 +548,6 @@ public class Player extends Object {
 	
 	// Stamina bar tick()
 	stamina.tick();
-	
-	// Animation sets and ticks
-//	if (boostTimer == 0) {
-//	    if (grounded) {
-//		if (velX == 0) {
-//		    setAnim(stand);
-//		} else {
-//		    setAnim(run);
-//		}
-//	    } else if (climbing) {
-//		setAnim(climb);
-//	    } else {
-//		setAnim(jumpFall);
-//	    }
-//	}
     }
 
     @Override

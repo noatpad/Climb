@@ -15,6 +15,9 @@ public class Config {
     public static boolean staminaDisplay, cameraShake;	    // Booleans to allow displaying stamina and shaking camera
     public static int buttonMap[];			    // Controller button mapping
     
+    /**
+     * Load config from file
+     */
     public static void loadConfig() {
 	BufferedReader br;
 	FileReader fr;
