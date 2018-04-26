@@ -108,5 +108,7 @@ public class StaminaBar {
 	g2d.fillRect(posX, posY, width, height);
 	g2d.setColor(Color.green);
 	g2d.fillRect(posX, posY, (int) (width * percent), height);
+	
+	g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
     }
 }

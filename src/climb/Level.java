@@ -3,6 +3,7 @@ package climb;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class Level {
@@ -10,7 +11,8 @@ public class Level {
     private ArrayList<Area> areas;
     private Area currentArea, lastArea;
     private Player player;
-    private boolean transition;
+    private PauseMenu pauseMenu;
+    private boolean transition, paused;
     
     /**
      * Level Constructor
@@ -20,6 +22,7 @@ public class Level {
 	this.game = game;
 	areas = new ArrayList<>();
 	transition = false;
+	paused = false;
 
 	Files.loadLevel(this, lvlNum, areaNum);
 	currentArea = areas.get(areaNum);
@@ -134,8 +137,17 @@ public class Level {
     public void tick() {
 	if (transition) {
 	    transition();
+	} else if (paused) {
+	    pauseMenu.tick();
+	    if (!pauseMenu.isPaused()) {
+		paused = false;
+	    }
 	} else {
 	    player.tick();
+	    if (game.getKeyMan().typed(KeyEvent.VK_ENTER)) {
+		pauseMenu = new PauseMenu(game, 0, 0);
+		paused = true;
+	    }
 	}
     }
     
@@ -148,7 +160,10 @@ public class Level {
 	    lastArea.render(g);
 	}
 	currentArea.render(g);
-	
 	player.render(g);
+	
+	if (paused) {
+	    pauseMenu.render(g);
+	}
     }
 }

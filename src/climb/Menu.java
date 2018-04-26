@@ -2,6 +2,7 @@
 package climb;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -21,6 +22,8 @@ public class Menu {
     private int posOffset;			// Position offset for selected option
     private boolean offsetUp;			// Boolean for incrementing or decrementing posOffset
     private int selectTimer;			// Tick counter for selected option
+    
+    private PauseMenu options;
     
     private String credits[];
     private int creditsPosX[], creditsPosY[];
@@ -82,24 +85,6 @@ public class Menu {
     /* METHODS */
     
     private void mainMenu() {
-	// Menu Selection
-	// TODO: Work on other menu options
-	if (game.getKeyMan().typed(KeyEvent.VK_ENTER)) {
-	    switch (selected) {
-		case 0:
-		    game.prepareLevel();
-		    return;
-		case 1:
-		    return;
-		case 2:
-		    state = 3;
-		    return;
-		case 3:
-		    return;
-		default: break;
-	    }
-	}
-
 	if (selectTimer >= 2) {
 	    selectTimer = 0;
 
@@ -121,11 +106,25 @@ public class Menu {
 	}
 
 	selectTimer++;
-    }
-    
-    private void credits() {
+	
+	// Menu Selection
 	if (game.getKeyMan().typed(KeyEvent.VK_ENTER)) {
-	    state = 0;
+	    switch (selected) {
+		case 0:
+		    game.prepareLevel();
+		    return;
+		case 1:
+		    options = new PauseMenu(game, 1, 1);
+		    state = 2;
+		    return;
+		case 2:
+		    state = 3;
+		    return;
+		case 3:
+		    game.setGameState(1);
+		    return;
+		default: break;
+	    }
 	}
     }
     
@@ -134,12 +133,18 @@ public class Menu {
 	    case 0:	// Main menu state
 		mainMenu();
 		break;
-	    case 1:	// Options
+	    case 1:	// Level select
 		break;
-	    case 2:	// Level select
+	    case 2:	// Options
+		options.tick();
+		if (!options.isPaused()) {
+		    state = 0;
+		}
 		break;
 	    case 3:	// Credits
-		credits();
+		if (game.getKeyMan().typed(KeyEvent.VK_ENTER)) {
+		    state = 0;
+		}
 		break;
 	    default: break;
 	}
@@ -150,17 +155,18 @@ public class Menu {
 	
 	g.setColor(Color.white);
 	switch (state) {
-	    case 0:
+	    case 0:	// Main menu
 		g.setFont(Assets.font.deriveFont(40f));
 		for (int i = 0; i < mainOptions.length; i++) {
 		    g.drawString(mainOptions[i], mainPosX[i], mainPosY[i] + (i == selected ? posOffset : 0));
 		}
 		break;
-	    case 1:
+	    case 1:	// Level Select
 		break;
-	    case 2:
+	    case 2:	// Options
+		options.render(g);
 		break;
-	    case 3:
+	    case 3:	// Credits
 		for (int i = 0; i < 6; i++) {
 		    if (i % 2 == 0) {
 			g.setFont(Assets.font.deriveFont(25f));
@@ -175,6 +181,8 @@ public class Menu {
 		for (int i = 7; i < 9; i++) {
 		    g.drawString(credits[i], creditsPosX[i], creditsPosY[i]);
 		}
+		g.setFont(Assets.font.deriveFont(Font.ITALIC, 15f));
+		g.drawString("Press ENTER to go back", 30, game.getHeight() - 30);
 		break;
 	    default: break;
 	}
