@@ -9,26 +9,27 @@ import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 
 public class Player extends Object {
-    private Level lvl;									// Current level instance
-    private Area area;									// Current area instance
-    private Rectangle box, ledgeBox;							// Collision box & "ledge" box
-    private StaminaBar stamina;								// Stamina
-    private int velX, velY;								// Velocity
-    private boolean facingRight;							// Boolean when facing right
+    private Level lvl;				// Current level instance
+    private Area area;				// Current area instance
+    private Rectangle box, ledgeBox;		// Collision box & "ledge" box
+    private StaminaBar stamina;			// Stamina
+    private int velX, velY;			// Velocity
+    private boolean facingRight;		// Boolean when facing right
     private boolean grounded, ceiling, walledL, walledR, climbing, jumping, wJumping;	// Booleans when touching a boundary & jumping
-    private Boundary climbableBound;							// Boundary instance that can be climbed
-    private boolean canBoost;
-    private int boostTimer;
-    private int jumpTimer, wallJumpTimer;
-    private Animation stand, run, jumpFall, climb, currentAnim;
-    private BufferedImage boostImg;
+    private Boundary climbableBound;		// Boundary instance that can be climbed
+    private boolean canBoost;			// Boolean when able to boost
+    private int boostTimer;			// Timer before boost runs out
+    private int jumpTimer, wallJumpTimer;	// Timers for jumps and wall jumps
+    
+    private Animation stand, run, jumpFall, climb, currentAnim;	    // Player animations
+    private BufferedImage boostImg;				    // Frame of player boosting
     
     /**
      * Player constructor
-     * @param x - X coordinate of its position
-     * @param y - Y coordinate of its position
-     * @param lvl - Level instance
-     * @param area - Area instance
+     * @param x X coordinate of its position
+     * @param y Y coordinate of its position
+     * @param lvl Level instance
+     * @param area Area instance
      */
     public Player(int x, int y, Level lvl, Area area) {
 	super(x, y, 25, 40);
@@ -96,11 +97,11 @@ public class Player extends Object {
     
     /**
      * Determines if player is hitting the corner of a boundary, by checking if the player's trajectory intersects with the wall
-     * @param top - True if hitting top corners, false if hitting bottom ones
-     * @param x - X coordinate of an important point of the player (depends on the situation)
-     * @param y - Y coordinate of an important point of the player (depends on the situation)
-     * @param wall - Rectangle of the wall in question
-     * @return if player is hitting the wall (true) or the floor/ceiling (false)
+     * @param top True if hitting top corners, false if hitting bottom ones
+     * @param x X coordinate of an important point of the player (depends on the situation)
+     * @param y Y coordinate of an important point of the player (depends on the situation)
+     * @param wall Rectangle of the wall in question
+     * @return If player is hitting the wall (true) or the floor/ceiling (false)
      */
     private boolean cornerCollision(boolean top, int x, int y, Rectangle wall) {
 	// If the point is below the wall, automatically assume it's hitting the wall
@@ -113,7 +114,7 @@ public class Player extends Object {
     
     /**
      * Determines if the player is able to climb a certain wall
-     * @return ability of player being able to climb
+     * @return Ability of player being able to climb
      */
     private boolean canClimb() {
 	if (climbableBound == null) {
@@ -228,6 +229,10 @@ public class Player extends Object {
 	ledgeBox.y = getY() + getHeight() / 5;
     }
     
+    /**
+     * Set player animation
+     * @param anim Animation to set player to
+     */
     private void setAnim(Animation anim) {
 	if (anim == currentAnim) {
 	    return;
@@ -556,6 +561,7 @@ public class Player extends Object {
 //	g.drawRect(box.x, box.y, box.width, box.height);
 //	g.setColor(Color.magenta);
 //	g.drawRect(ledgeBox.x, ledgeBox.y, ledgeBox.width, ledgeBox.height);
+
 	if (boostTimer == 0) {
 	    g.drawImage(currentAnim.getCurrentFrame(), getX(), getY(), null);
 	} else {

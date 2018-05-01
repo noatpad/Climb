@@ -33,9 +33,9 @@ public class PauseMenu {
 
     /**
      * PauseMenu Constructor
-     * @param game - Game instance
-     * @param exitState - State that menu can be in to exit pause menu altogether
-     * @param state - Current state
+     * @param game Game instance
+     * @param exitState State that menu can be in to exit pause menu altogether
+     * @param state Current state
      */
     public PauseMenu(Game game, int exitState, int state) {
 	this.game = game;
@@ -48,6 +48,7 @@ public class PauseMenu {
 	posOffset = 0;
 	selectTimer = 0;
 	
+	// Pause menu elements
 	pauseOptions = new String[] {"Resume", "Restart level", "Options", "Return to Title"};
 	fm = game.getGraphics().getFontMetrics(Assets.font.deriveFont(25f));
 	pauseOptionsPosX = new int[4]; pauseOptionsPosY = new int[4];
@@ -56,6 +57,7 @@ public class PauseMenu {
 	    pauseOptionsPosY[i] = (int) (1.4 * fm.getAscent()) + (i == 0 ? 200 : pauseOptionsPosY[i - 1]);
 	}
 	
+	// Options menu elements
 	options = new String[] {"Music", "Sounds", "Display Stamina", "Camera Shake", "Controller Config", "Back"};
 	values = new String[] {"10", "10", "YES", "YES"};	// Debug values (currently not yet usable)
 	fm = game.getGraphics().getFontMetrics(Assets.font.deriveFont(30f));

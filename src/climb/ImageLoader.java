@@ -5,16 +5,10 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
-/**
- *
- * @author Danny
- */
 public class ImageLoader {
-
     /**
      * Load image from file path
-     *
-     * @param path is the path to image file
+     * @param path Path to image file
      * @return <b>BufferedImage</b> object
      */
     public static BufferedImage loadImage(String path) {
@@ -30,12 +24,11 @@ public class ImageLoader {
 
     /**
      * Load and crop a single image from file path
-     *
-     * @param path is the path to the image file
-     * @param x is the x coordinate of the image
-     * @param y is the y coordinate of the image
-     * @param width is the width of the image
-     * @param height is the height of the image
+     * @param path Path to the image file
+     * @param x X coordinate of the image
+     * @param y Y coordinate of the image
+     * @param width Width of the image
+     * @param height Height of the image
      * @return <b>BufferedImage</b> object
      */
     public static BufferedImage loadImage(String path, int x, int y, int width, int height) {

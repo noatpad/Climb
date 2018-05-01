@@ -2,6 +2,7 @@
 /* Credit where due:
 Montserrat Font -> https://fonts.google.com/specimen/Montserrat
 */
+
 package climb;
 
 import java.awt.Font;
@@ -11,14 +12,14 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class Assets {
-    public static Font font;
+    public static Font font;			    // Font used in-game
     
-    public static BufferedImage title_bg;
+    public static BufferedImage title_bg;	    // Background image for title screen
     
-    public static BufferedImage level_bg;
-    public static BufferedImage tile[];
+    public static BufferedImage level_bg;	    // Background image for level screen
+    public static BufferedImage tile[];		    // Tile images for textures
     
-    public static BufferedImage stand[], run[], jumpFall[], boost[], climb[];
+    public static BufferedImage stand[], run[], jumpFall[], boost[], climb[];	    // Animation frames for players
     
     /**
      * Initialize assets on first load
@@ -33,7 +34,7 @@ public class Assets {
 	}
 	
 	menuInit();	// Call menuInit() since first load lands on the main menu
-	playerInit();
+	playerInit();	// Call playerInit() too
     }
     
     /**

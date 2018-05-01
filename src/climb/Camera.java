@@ -2,7 +2,7 @@
 package climb;
 
 public class Camera {
-    public static int x, y;
+    public static int x, y;	    // Camera position
 //    private static int minOffsetX, minOffsetY, maxOffsetX, maxOffsetY;
     
     /**
@@ -15,7 +15,7 @@ public class Camera {
     
     /**
      * Initialize camera for a level
-     * @param area - Current area player is in
+     * @param area Current area player is in
      */
     public static void levelInit(Area area) {
 	x = area.getPosX();

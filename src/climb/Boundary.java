@@ -1,19 +1,19 @@
 
 package climb;
 
-import java.awt.Color;
+// import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
 public class Boundary extends Object {
-    private Rectangle bound, floor, wallL, wallR, ceiling;
+    private Rectangle bound, floor, wallL, wallR, ceiling;	// Collision detection rectangles
 
     /**
      * Boundary Constructor
-     * @param x - X coordinate of boundary
-     * @param y - Y coordinate of boundary
-     * @param width - width of boundary
-     * @param height - height of boundary
+     * @param x X coordinate of boundary
+     * @param y Y coordinate of boundary
+     * @param width Width of boundary
+     * @param height Height of boundary
      */
     public Boundary(int x, int y, int width, int height) {
 	super(x, y, width, height);

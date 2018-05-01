@@ -23,14 +23,14 @@ public class Menu {
     private boolean offsetUp;			// Boolean for incrementing or decrementing posOffset
     private int selectTimer;			// Tick counter for selected option
     
-    private PauseMenu options;
+    private PauseMenu options;			// Options instance
     
-    private String credits[];
-    private int creditsPosX[], creditsPosY[];
+    private String credits[];			    // Credits
+    private int creditsPosX[], creditsPosY[];	    // Credits positions
 
     /**
      * Game Constructor
-     * @param game - Game instance
+     * @param game Game instance
      */
     public Menu(Game game) {
 	this.game = game;

@@ -2,7 +2,6 @@
 package climb;
 
 /**
- *
  * @author Daniel Hernandez, A01282769
  */
 public class Main {

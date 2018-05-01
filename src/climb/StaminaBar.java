@@ -15,7 +15,7 @@ public class StaminaBar {
 
     /**
      * StaminaBar Constructor
-     * @param player - Current player instance
+     * @param player Current player instance
      */
     public StaminaBar(Player player) {
 	this.player = player;
@@ -54,7 +54,7 @@ public class StaminaBar {
     
     /**
      * Determine if you have stamina left
-     * @return stamina is over 0
+     * @return If stamina is over 0
      */
     public boolean gotStamina() {
 	return stamina > 0;
@@ -62,7 +62,7 @@ public class StaminaBar {
     
     /**
      * Decrease stamina by a certain amount
-     * @param usage - Stamina used up in action
+     * @param usage Stamina used up in action
      */
     public void useStamina(int usage) {
 	stamina -= usage;

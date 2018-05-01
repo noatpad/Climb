@@ -5,13 +5,14 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 
 public class Area {
-    private int roomID;
-    private int posX, posY, spawnX, spawnY;
-    private ArrayList<Boundary> bounds;
-    private ArrayList<LoadZone> loadZones;
+    private int roomID;				// Room ID number
+    private int posX, posY, spawnX, spawnY;	// Room position (by its top-left corner) / Spawn point position
+    private ArrayList<Boundary> bounds;		// List of Boundaries in room
+    private ArrayList<LoadZone> loadZones;	// List of LoadZones in room
 
     /**
      * Area Constructor
+     * @param roomID Room identifier
      */
     public Area(int roomID) {
 	this.roomID = roomID;

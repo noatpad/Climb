@@ -6,17 +6,17 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 
 public class Display {
-    private JFrame jFrame;
-    private Canvas canvas;
+    private JFrame jFrame;	    // jFrame object
+    private Canvas canvas;	    // Canvas object
     
-    private String title;
-    private int height, width;
+    private String title;	    // Title of window
+    private int height, width;	    // Window dimensions
     
     /**
      * Display Constructor
-     * @param t is the title of the window
-     * @param h is the height of said window
-     * @param w is the width of said window
+     * @param t Title of the window
+     * @param h Height of window
+     * @param w Width of window
      */
     public Display(String t, int h, int w) {
 	title = t;

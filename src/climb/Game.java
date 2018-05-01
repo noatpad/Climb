@@ -1,7 +1,7 @@
 
 package climb;
 
-import java.awt.Color;
+// import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
@@ -13,7 +13,7 @@ public class Game implements Runnable {
     private BufferStrategy bs;		// Display buffers 
     private Graphics g;			// Graphics object for painting
     private KeyManager keyMan;		// Keyboard manager (KeyListener)
-    private int gameState;
+    private int gameState;		// Cuurent game state
     /* Game state values:
     0 -> haven't started/terminated
     1 -> title screen menu
@@ -120,6 +120,7 @@ public class Game implements Runnable {
     
     /**
      * Prepare new level for playing
+     * @param level Level number to prepare
      */
     public void prepareLevel(int level) {
 	Assets.levelInit();

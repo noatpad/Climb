@@ -34,7 +34,7 @@ public class Config {
 	    staminaDisplay = Boolean.parseBoolean(line);
 	    line = br.readLine();
 	    cameraShake = Boolean.parseBoolean(line);
-	} catch (IOException ioe) {
+	} catch (IOException ioe) {	// If file doesn't exist, make a new config file with default values
 	    System.err.println("ERROR: Unable to find configuration file! Creating one for you... " + ioe.toString());
 	    try {
 		PrintWriter pw = new PrintWriter("config.cfg");
@@ -47,7 +47,7 @@ public class Config {
 		sound = 10;
 		staminaDisplay = true;
 		cameraShake = true;
-	    } catch (IOException ioe2) {
+	    } catch (IOException ioe2) {	// If somehow file creation wasn't possible, enter here
 		System.err.println("ERROR: Unable to create config file! " + ioe.toString());
 	    }
 	}

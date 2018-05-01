@@ -14,8 +14,9 @@ public class Animation {
     /**
      * <b>Animation</b> constructor with specified frames and speed
      *
-     * @param frames is the array of sprites
-     * @param speed is the speed the animation will run as
+     * @param frames Array of sprites
+     * @param speed Speed the animation will run as
+     * @param loop If the animation can be looped
      */
     public Animation(BufferedImage[] frames, int speed, boolean loop) {
 	this.frames = frames;
@@ -59,6 +60,9 @@ public class Animation {
     
     /* METHODS */
     
+    /**
+     * Resets animation back to its start
+     */
     public void reset() {
 	index = start;
 	timer = 0;
@@ -80,10 +84,15 @@ public class Animation {
 	}
     }
     
+    /**
+     * Tick update with player direction involved
+     * @param facingRight Player's current direction
+     */
     public void tick(boolean facingRight) {
 	timer += System.currentTimeMillis() - lastTime;	    // accumulate timer
 	lastTime = System.currentTimeMillis();		    // updates lastTime
 	
+	// Determine range of frames since animation is divided between left and right sides
 	if (facingRight) {
 	    start = 0;
 	    end = frames.length / 2;

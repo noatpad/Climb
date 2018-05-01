@@ -4,14 +4,14 @@ package climb;
 import java.awt.Graphics;
 
 public abstract class Object {
-    protected int x, y, width, height;
+    protected int x, y, width, height;	    // Position and dimensions
 
     /**
      * Object Constructor
-     * @param x - X coordinate of object
-     * @param y - Y coordinate of object
-     * @param width - width of object
-     * @param height - height of object
+     * @param x X coordinate of object
+     * @param y Y coordinate of object
+     * @param width Width of object
+     * @param height Height of object
      */
     public Object(int x, int y, int width, int height) {
 	this.x = x;

@@ -7,16 +7,16 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class Level {
-    private Game game;
-    private ArrayList<Area> areas;
-    private Area currentArea, lastArea;
-    private Player player;
-    private PauseMenu pauseMenu;
-    private boolean transition, paused;
+    private Game game;			    // Game instance
+    private ArrayList<Area> areas;	    // List of areas in level
+    private Area currentArea, lastArea;	    // Current area that player was in (and previous area as well)
+    private Player player;		    // Player object
+    private PauseMenu pauseMenu;	    // PauseMenu object
+    private boolean transition, paused;	    // Boolean to determine if transitioning or paused
     
     /**
      * Level Constructor
-     * @param game - Game instance
+     * @param game Game instance
      */
     Level(Game game, int lvlNum, int areaNum) {
 	this.game = game;
@@ -24,9 +24,9 @@ public class Level {
 	transition = false;
 	paused = false;
 
-	Files.loadLevel(this, lvlNum, areaNum);
+	Files.loadLevel(this, lvlNum, areaNum);	    // Loads level from file
 	currentArea = areas.get(areaNum);
-	Camera.levelInit(currentArea);
+	Camera.levelInit(currentArea);		    // Sets up camera
 	player = new Player(currentArea.getSpawnX(), currentArea.getSpawnY(), this, currentArea);
     }
     
@@ -84,7 +84,7 @@ public class Level {
     
     /**
      * Used to start transition between rooms/areas
-     * @param lz - Triggered LoadZone by player. Used to update 'currentArea'
+     * @param lz Triggered LoadZone by player. Used to update 'currentArea'
      */
     public void startTransition(LoadZone lz) {
 	lastArea = currentArea;
@@ -125,6 +125,7 @@ public class Level {
 	}
 	
 	player.updateBoxes();
+	
 	// When the camera is at the right spot, go back to regular gameplay (update Area instance in Player and allow boosting again)
 	if (h && v) {
 	    lastArea = null;
