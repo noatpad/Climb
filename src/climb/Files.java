@@ -2,10 +2,9 @@
 package climb;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class Files {
     /**
@@ -16,14 +15,13 @@ public class Files {
      */
     public static void loadLevel(Level lvl, int lvlNum, int areaNum) {
 	BufferedReader br;
-	FileReader fr;
+	// InputStream gets corresponding level file
+	InputStream is = Files.class.getResourceAsStream("/levels/" + Integer.toString(lvlNum) + ".lvl");
 	
-	URL url = Files.class.getResource("/levels/" + Integer.toString(lvlNum) + ".lvl");
 	try {
 	    // Setup file reading
-	    fr = new FileReader(new File(url.getPath()));
-	    br = new BufferedReader(fr);
-	    
+	    br = new BufferedReader(new InputStreamReader(is));
+
 	    int x, y;
 	    String line;
 	    String[] elements;
