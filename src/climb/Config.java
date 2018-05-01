@@ -2,9 +2,9 @@
 package climb;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 
@@ -16,16 +16,15 @@ public class Config {
     public static int buttonMap[];			    // Controller button mapping
     
     /**
-     * Load config from file
+     * Load configuration from file
      */
     public static void loadConfig() {
 	BufferedReader br;
-	FileReader fr;
+	InputStream is = Config.class.getResourceAsStream("/config.cfg");
 	
 	URL url = Files.class.getResource("config.cfg");
 	try {
-	    fr = new FileReader(new File(url.getPath()));
-	    br = new BufferedReader(fr);
+	    br = new BufferedReader(new InputStreamReader(is));
 	    
 	    String line = br.readLine();
 	    music = Integer.parseInt(line);
