@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class Player extends Object {
     private Level lvl;				// Current level instance
@@ -20,6 +21,9 @@ public class Player extends Object {
     private boolean canBoost;			// Boolean when able to boost
     private int boostTimer;			// Timer before boost runs out
     private int jumpTimer, wallJumpTimer;	// Timers for jumps and wall jumps
+    
+    private boolean dead;
+    private ArrayList<DeathParticle> deathParticles;	    // List of death particles
     
     private Animation stand, run, jumpFall, climb, currentAnim;	    // Player animations
     private BufferedImage boostImg;				    // Frame of player boosting
@@ -50,6 +54,9 @@ public class Player extends Object {
 	boostTimer = 0;
 	jumpTimer = 0;
 	wallJumpTimer = 0;
+	
+	dead = false;
+	deathParticles = new ArrayList<>();
 	
 	stand = new Animation(Assets.stand, 300, true);
 	run = new Animation(Assets.run, 20, true);
@@ -91,6 +98,14 @@ public class Player extends Object {
      */
     public boolean isClimbing() {
 	return climbing;
+    }
+
+    /**
+     * dead Getter
+     * @return dead
+     */
+    public boolean isDead() {
+	return dead;
     }
     
     /* METHODS */
@@ -242,8 +257,22 @@ public class Player extends Object {
 	currentAnim.tick(facingRight);
     }
     
+    public void respawn() {
+	setX(area.getSpawnX() + area.getPosX());
+	setY(area.getSpawnY() + area.getPosY());
+	deathParticles.clear();
+	dead = false;
+    }
+    
     @Override
     public void tick() {
+	if (dead) {
+	    for (DeathParticle d : deathParticles) {
+		d.tick();
+	    }
+	    return;
+	}
+	
 	boolean up = lvl.getKeyMan().pressed(KeyEvent.VK_UP),
 		down = lvl.getKeyMan().pressed(KeyEvent.VK_DOWN),
 		left = lvl.getKeyMan().pressed(KeyEvent.VK_LEFT),
@@ -288,7 +317,15 @@ public class Player extends Object {
 		    default: break;
 		}
 		if (good) {
-		    lvl.death();
+		    dead = true;
+		    deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, 0, -10));
+		    deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, 8, -8));
+		    deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, 10, 0));
+		    deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, 8, 8));
+		    deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, 0, 10));
+		    deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, -8, 8));
+		    deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, -10, 0));
+		    deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, -8, -8));
 		    return;
 		}
 	    }
@@ -580,6 +617,12 @@ public class Player extends Object {
 
     @Override
     public void render(Graphics g) {
+	if (dead) {
+	    for (DeathParticle d : deathParticles) {
+		d.render(g);
+	    }
+	    return;
+	}
 	if (boostTimer == 0) {
 	    g.drawImage(currentAnim.getCurrentFrame(), getX(), getY(), getWidth(), getHeight(), null);
 	} else {

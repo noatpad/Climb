@@ -12,7 +12,9 @@ public class Level {
     private Area currentArea, lastArea;		    // Current area that player was in (and previous area as well)
     private Player player;			    // Player object
     private PauseMenu pauseMenu;		    // PauseMenu object
+    
     private boolean transition, paused, died;	    // Boolean to determine if transitioning, paused, or died
+    private int deathTimer;
     
     /**
      * Level Constructor
@@ -136,12 +138,6 @@ public class Level {
 	}
     }
     
-    public void death() {
-	player = null;
-	died = true;
-	System.out.println("climb.Level.death()");
-    }
-    
     public void tick() {
 	if (transition) {
 	    transition();
@@ -151,12 +147,31 @@ public class Level {
 		paused = false;
 	    }
 	} else if (died) {
+	    deathTimer++;
 	    
+	    if (deathTimer < 10) {
+		player.tick();
+	    } else if (deathTimer == 10) {
+		player.respawn();
+	    } else if (deathTimer == 25) {
+		died = false;
+	    }
+//	    player.respawn();
+//	    died = false;
 	} else {
 	    player.tick();
+	    
 	    if (game.getKeyMan().typed(KeyEvent.VK_ENTER)) {
 		pauseMenu = new PauseMenu(game, 0, 0);
 		paused = true;
+	    }
+	    
+	    if (player.isDead()) {
+		deathTimer++;
+		if (deathTimer > 40) {
+		    died = true;
+		    deathTimer = 0;
+		}
 	    }
 	}
     }
@@ -170,8 +185,11 @@ public class Level {
 	    lastArea.render(g);
 	}
 	currentArea.render(g);
-	if (!died) {
-	    player.render(g);
+	player.render(g);
+	
+	if (died) {
+	    g.setColor(Color.black);
+	    g.fillRect(Camera.x, Camera.y - (int) (game.getHeight() * 1.5) + (game.getHeight() / 10 * deathTimer), game.getWidth(), (int) (game.getHeight() * 1.5));
 	}
 	
 	if (paused) {

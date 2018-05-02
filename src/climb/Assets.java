@@ -21,6 +21,7 @@ public class Assets {
     public static BufferedImage spikes[];	    // Images for spikes
     
     public static BufferedImage stand[], run[], jumpFall[], boost[], climb[];	    // Animation frames for players
+    public static BufferedImage deathParticle[];    // Player death particles
     
     /**
      * Initialize assets on first load
@@ -88,6 +89,12 @@ public class Assets {
 	climb = new BufferedImage[8];
 	for (int i = 0; i < 8; i++) {
 	    climb[i] = ss.crop(i * 25, 160, 25, 40);
+	}
+	
+	ss = new Spritesheet(ImageLoader.loadImage("/images/deathParticle.png"));
+	deathParticle = new BufferedImage[11];
+	for (int i = 0; i < 11; i++) {
+	    deathParticle[i] = ss.crop(i * 32, 0, 32, 32);
 	}
     }
 }

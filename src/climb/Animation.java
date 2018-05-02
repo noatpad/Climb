@@ -13,7 +13,7 @@ public class Animation {
     private BufferedImage[] frames;	    // BufferedImage array of frames
 
     /**
-     * <b>Animation</b> constructor with specified frames and speed
+     * <b>Animation</b> constructor
      *
      * @param frames Array of sprites
      * @param speed Speed the animation will run as
@@ -27,6 +27,26 @@ public class Animation {
 	index = 0;
 	start = 0;
 	end = frames.length;
+	timer = 0;
+	lastTime = System.currentTimeMillis();
+    }
+    
+    /**
+     * <b>Animation</b> constructor with specified index, start frame, & end frame
+     * @param frames Array of sprites
+     * @param speed Speed the animation will run as
+     * @param index Starting frame index
+     * @param start Starting frame of loop
+     * @param end Last frame of loop
+     */
+    public Animation(BufferedImage[] frames, int speed, int index, int start, int end) {
+	this.frames = frames;
+	this.speed = speed;
+	this.index = index;
+	this.start = start;
+	this.end = end;
+	loop = true;
+	right = true;
 	timer = 0;
 	lastTime = System.currentTimeMillis();
     }
@@ -88,8 +108,8 @@ public class Animation {
 	if (loop && timer > speed) {	    // When timer surpasses speed, go to next frame index
 	    timer = 0;
 	    index++;
-	    if (index >= frames.length) {    // if index goes out of bounds, start back at 0
-		index = 0;
+	    if (index >= end) {    // if index goes out of bounds, start back at 0
+		index = start;
 	    }
 	}
     }
