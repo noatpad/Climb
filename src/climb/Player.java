@@ -32,7 +32,7 @@ public class Player extends Object {
      * @param area Area instance
      */
     public Player(int x, int y, Level lvl, Area area) {
-	super(x, y, 25, 40);
+	super(x, y, 30, 48);
 	this.lvl = lvl;
 	this.area = area;
 	
@@ -239,7 +239,7 @@ public class Player extends Object {
 	}
 	anim.reset();
 	currentAnim = anim;
-	currentAnim.tick();
+	currentAnim.tick(facingRight);
     }
     
     @Override
@@ -388,7 +388,7 @@ public class Player extends Object {
 	    }
 	    
 	    setAnim(climb);
-	    if (velY != 0) {
+	    if (velY < 0) {
 		climb.tick(facingRight);
 	    }
 	    
@@ -426,19 +426,21 @@ public class Player extends Object {
 	}
 	
 	// Extra stuff
-	if (grounded && boostTimer == 0) {		// When on the ground
+	if (boostTimer == 0) {
 	    // Update facingRight depending on 'velX'
 	    if (velX > 0) {
 		facingRight = true;
 	    } else if (velX < 0) {
 		facingRight = false;
 	    }
-	    // Allow boosting again
-	    canBoost = true;
-	} else if (boostTimer == 0 && !climbing && velY < 8) {
-	    velY++;
-	    setAnim(jumpFall);
-	    jumpFall.tick(facingRight);
+	    
+	    if (grounded) {
+		canBoost = true;
+	    } else if (!climbing && velY < 8) {
+		velY++;
+		setAnim(jumpFall);
+		jumpFall.tick(facingRight);
+	    }
 	}
 	
 	// Jump
@@ -557,16 +559,16 @@ public class Player extends Object {
 
     @Override
     public void render(Graphics g) {
+	if (boostTimer == 0) {
+	    g.drawImage(currentAnim.getCurrentFrame(), getX(), getY(), getWidth(), getHeight(), null);
+	} else {
+	    g.drawImage(boostImg, getX(), getY(), getWidth(), getHeight(), null);
+	}
+	stamina.render(g);
+	
 //	g.setColor(Color.white);
 //	g.drawRect(box.x, box.y, box.width, box.height);
 //	g.setColor(Color.magenta);
 //	g.drawRect(ledgeBox.x, ledgeBox.y, ledgeBox.width, ledgeBox.height);
-
-	if (boostTimer == 0) {
-	    g.drawImage(currentAnim.getCurrentFrame(), getX(), getY(), null);
-	} else {
-	    g.drawImage(boostImg, getX(), getY(), null);
-	}
-	stamina.render(g);
     }
 }

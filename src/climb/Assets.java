@@ -51,11 +51,11 @@ public class Assets {
 	level_bg = ImageLoader.loadImage("/images/lvl_bg.png");
 	
 	tile = new BufferedImage[5];
-	tile[0] = ImageLoader.loadImage("/images/tile.png", 0, 0, 16, 16);
-	tile[1] = ImageLoader.loadImage("/images/tile.png", 16, 0, 16, 6);
-	tile[2] = ImageLoader.loadImage("/images/tile.png", 32, 0, 6, 16);
-	tile[3] = ImageLoader.loadImage("/images/tile.png", 48, 0, 16, 6);
-	tile[4] = ImageLoader.loadImage("/images/tile.png", 64, 0, 6, 16);
+	tile[0] = ImageLoader.loadImage("/images/tile.png", 0, 0, 24, 24);
+	tile[1] = ImageLoader.loadImage("/images/tile.png", 24, 0, 24, 10);
+	tile[2] = ImageLoader.loadImage("/images/tile.png", 48, 0, 10, 24);
+	tile[3] = ImageLoader.loadImage("/images/tile.png", 72, 0, 24, 10);
+	tile[4] = ImageLoader.loadImage("/images/tile.png", 96, 0, 10, 24);
     }
     
     /**

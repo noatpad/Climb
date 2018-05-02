@@ -18,10 +18,10 @@ public class Boundary extends Object {
     public Boundary(int x, int y, int width, int height) {
 	super(x, y, width, height);
 	bound = new Rectangle(x, y, width, height);
-	floor = new Rectangle(x + 1, y, width - 2, 6);
-	wallL = new Rectangle(x, y + 1, 6, height - 2);
-	wallR = new Rectangle(x + width - 6, y + 1, 6, height - 2);
-	ceiling = new Rectangle(x + 1, y + height - 6, width - 2, 6);
+	floor = new Rectangle(x + 1, y, width - 2, 10);
+	wallL = new Rectangle(x, y + 1, 10, height - 2);
+	wallR = new Rectangle(x + width - 10, y + 1, 10, height - 2);
+	ceiling = new Rectangle(x + 1, y + height - 10, width - 2, 10);
     }
     
     /* GETTERS */

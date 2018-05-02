@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 public class Animation {
     private int speed;			    // Speed of which the animation loops
     private int index, start, end;	    // Index of array of frames
+    private boolean right;		    // Determine to use animation for facing right (2nd half of animation)
     private boolean loop;		    // Boolean to determine looping
     private long lastTime;		    // last registered time
     private long timer;			    // time passed
@@ -22,6 +23,7 @@ public class Animation {
 	this.frames = frames;
 	this.speed = speed;
 	this.loop = loop;
+	right = true;
 	index = 0;
 	start = 0;
 	end = frames.length;
@@ -64,6 +66,14 @@ public class Animation {
      * Resets animation back to its start
      */
     public void reset() {
+	if (right) {
+	    start = 0;
+	    end = frames.length / 2;
+	} else {
+	    start = frames.length / 2 + 1;
+	    end = frames.length;
+	}
+	
 	index = start;
 	timer = 0;
 	lastTime = 0;
@@ -92,26 +102,16 @@ public class Animation {
 	timer += System.currentTimeMillis() - lastTime;	    // accumulate timer
 	lastTime = System.currentTimeMillis();		    // updates lastTime
 	
-	// Determine range of frames since animation is divided between left and right sides
-	if (facingRight) {
-	    start = 0;
-	    end = frames.length / 2;
-	    if (index > end) {
-		index = end;
-	    }
-	} else {
-	    start = frames.length / 2 + 1;
-	    end = frames.length; 
-	    if (index < start) {
-		index = start;
-	    }
+	if (right != facingRight) {
+	    right = facingRight;
+	    reset();
 	}
 	
-	if (timer > speed) {	    // When timer surpasses speed, go to next frame index
+	if (timer > speed) {
 	    timer = 0;
 	    if (loop) {
 		index++;
-		if (index >= end) {    // if index goes out of bounds, start back at 0
+		if (index >= end) {
 		    index = start;
 		}
 	    }
