@@ -13,17 +13,14 @@ public class Menu {
     /* Menu state values:
     0 -> Main menu
     1 -> Level select
-    2 -> Options
-    3 -> Credits
-    4 -> Entering level
+    2 -> Credits
+    3 -> Entering level
     */
     private String mainOptions[];		// Strings of available options
     private int mainPosX[], mainPosY[];		// Positions of options
     private int posOffset;			// Position offset for selected option
     private boolean offsetUp;			// Boolean for incrementing or decrementing posOffset
     private int selectTimer;			// Tick counter for selected option
-    
-    private PauseMenu options;			// Options instance
     
     private String credits[];			    // Credits
     private int creditsPosX[], creditsPosY[];	    // Credits positions
@@ -43,8 +40,8 @@ public class Menu {
 	// TODO: Make a Textbox class to allow handling these texts easier
 	
 	// Positions for main menu elements
-	mainOptions = new String[] {"Climb", "Options", "Credits"};
-	mainPosX = new int[3]; mainPosY = new int[3];
+	mainOptions = new String[] {"Climb", "Credits"};
+	mainPosX = new int[2]; mainPosY = new int[2];
 	FontMetrics fm = game.getGraphics().getFontMetrics(Assets.font.deriveFont(40f));    // FontMetrics is used to measure string lengths
 	// Position menu options to a certain area, aligned to the right
 	for (int i = 0; i < mainOptions.length; i++) {
@@ -103,7 +100,7 @@ public class Menu {
 	}
 
 	// Change option on command
-	if (selected < 2 && game.getKeyMan().typed(KeyEvent.VK_DOWN)) {
+	if (selected < 1 && game.getKeyMan().typed(KeyEvent.VK_DOWN)) {
 	    selected++;
 	    selectTimer = 0;
 	}
@@ -121,12 +118,8 @@ public class Menu {
 		    Assets.bg_music.stop();
 		    game.prepareLevel(1);
 		    return;
-		case 1:	    // Options
-		    options = new PauseMenu(game, 1, 1);
+		case 1:	    // Credits
 		    state = 2;
-		    break;
-		case 2:	    // Credits
-		    state = 3;
 		    break;
 		default: break;
 	    }
@@ -141,13 +134,7 @@ public class Menu {
 		break;
 	    case 1:	// Level select
 		break;
-	    case 2:	// Options
-		options.tick();
-		if (!options.isPaused()) {
-		    state = 0;
-		}
-		break;
-	    case 3:	// Credits
+	    case 2:	// Credits
 		if (game.getKeyMan().typed(KeyEvent.VK_ENTER)) {
 		    state = 0;
 		}
@@ -169,10 +156,7 @@ public class Menu {
 		break;
 	    case 1:	// Level Select
 		break;
-	    case 2:	// Options
-		options.render(g);
-		break;
-	    case 3:	// Credits
+	    case 2:	// Credits
 		for (int i = 0; i < 6; i++) {
 		    if (i % 2 == 0) {
 			g.setFont(Assets.font.deriveFont(25f));

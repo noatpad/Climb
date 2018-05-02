@@ -23,10 +23,6 @@ public class PauseMenu {
     private String pauseOptions[];
     private int pauseOptionsPosX[], pauseOptionsPosY[];
     
-    // Strings and positions of options menu options
-    private String options[], values[];
-    private int optionsPosX, valuesPosX[], optionsPosY[];
-    
     private int posOffset;			// Position offset for selected option
     private boolean offsetUp;			// Boolean for incrementing or decrementing posOffset
     private int selectTimer;			// Tick counter for selected option
@@ -49,27 +45,13 @@ public class PauseMenu {
 	selectTimer = 0;
 	
 	// Pause menu elements
-	pauseOptions = new String[] {"Resume", "Restart level", "Options", "Return to Title"};
+	pauseOptions = new String[] {"Resume", "Restart level", "Return to Title"};
 	fm = game.getGraphics().getFontMetrics(Assets.font.deriveFont(25f));
-	pauseOptionsPosX = new int[4]; pauseOptionsPosY = new int[4];
-	for (int i = 0; i < 4; i++) {
+	pauseOptionsPosX = new int[3]; pauseOptionsPosY = new int[3];
+	for (int i = 0; i < 3; i++) {
 	    pauseOptionsPosX[i] = game.getWidth() / 2 - fm.stringWidth(pauseOptions[i]) / 2;
 	    pauseOptionsPosY[i] = (int) (1.4 * fm.getAscent()) + (i == 0 ? 200 : pauseOptionsPosY[i - 1]);
 	}
-	
-	// Options menu elements
-	options = new String[] {"Music", "Sounds", "Display Stamina", "Camera Shake", "Controller Config", "Back"};
-	values = new String[] {"10", "10", "YES", "YES"};	// Debug values (currently not yet usable)
-	fm = game.getGraphics().getFontMetrics(Assets.font.deriveFont(30f));
-	optionsPosX = game.getWidth() / 6;
-	valuesPosX = new int[4]; optionsPosY = new int[6];
-	for (int i = 0; i < 4; i++) {
-	    valuesPosX[i] = 5 * game.getWidth() / 6 - fm.stringWidth(values[i]);
-	}
-	for (int i = 0; i < 6; i++) {
-	    optionsPosY[i] = (int) (1.6 * fm.getAscent() + (i == 0 ? 250 : optionsPosY[i - 1]));
-	}
-	
     }
     
     /* GETTERS */
@@ -84,10 +66,7 @@ public class PauseMenu {
     
     /* METHODS */
     
-    /**
-     * Main pause menu
-     */
-    private void pauseMenu() {
+    public void tick() {
 	if (selectTimer >= 2) {
 	    selectTimer = 0;
 
@@ -128,70 +107,18 @@ public class PauseMenu {
 	selectTimer++;
     }
     
-    /**
-     * Options menu (NOT YET IMPLEMENTED)
-     */
-//    private void options() {
-//	if (selected < 6 && game.getKeyMan().typed(KeyEvent.VK_DOWN)) {
-//	    selected++;
-//	}
-//	if (selected > 0 && game.getKeyMan().typed(KeyEvent.VK_UP)) {
-//	    selected--;
-//	}
-//    }
-    
-    public void tick() {
-	switch (state) {
-	    case 0:	// Pause menu
-		pauseMenu();
-		break;
-	    case 1:	// Options menu
-		if (game.getKeyMan().typed(KeyEvent.VK_ENTER)) {
-		    paused = false;
-		}
-//		options();	    // NOT YET READY
-		break;
-	    case 2:	// Controller configuration
-		break;
-	}
-    }
-    
     public void render(Graphics g) {
 	g.setColor(bgColor);
 	g.fillRect(0, 0, game.getWidth(), game.getHeight());
-	
-	switch (state) {
-	    case 0:	// Pause menu
-		g.setFont(Assets.font.deriveFont(25f));
-		for (int i = 0; i < 4; i++) {
-		    if (i == 1) {
-			g.setColor(new Color(0.5f, 0.5f, 0.5f));
-		    } else {
-			g.setColor(Color.white);
-		    }
-		    g.drawString(pauseOptions[i], pauseOptionsPosX[i], pauseOptionsPosY[i] + (i == selected ? posOffset : 0));
-		}
-		break;
-	    case 1:	// Options menu
-		g.setColor(Color.white);
-		g.setFont(Assets.font.deriveFont(50f));
-		fm = g.getFontMetrics();
-		g.drawString("OPTIONS", game.getWidth() / 2 - fm.stringWidth("OPTIONS") / 2, 150);
-		g.setFont(Assets.font.deriveFont(Font.ITALIC, 18f));
+	g.setFont(Assets.font.deriveFont(25f));
+	for (int i = 0; i < 4; i++) {
+	    if (i == 1) {
 		g.setColor(new Color(0.5f, 0.5f, 0.5f));
-		fm = g.getFontMetrics();
-		g.drawString("Sorry! This isn't ready to go just yet! Press ENTER to exit.", game.getWidth() / 2 - fm.stringWidth("Sorry! This isn't ready to go just yet! Press ENTER to exit.") / 2, 200);
-		g.setFont(Assets.font.deriveFont(30f));
-		for (int i = 0; i < 6; i++) {
-		    g.drawString(options[i], optionsPosX, optionsPosY[i]);
-		}
-		for (int i = 0; i < 4; i++) {
-		    g.drawString(values[i], valuesPosX[i], optionsPosY[i]);
-		}
-		break;
-	    case 2:	// Controller configuration
-		break;
-	    default: break;
+	    } else {
+		g.setColor(Color.white);
+	    }
+	    g.drawString(pauseOptions[i], pauseOptionsPosX[i], pauseOptionsPosY[i] + (i == selected ? posOffset : 0));
+	}
 	}
     }
 }
