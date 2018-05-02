@@ -326,6 +326,7 @@ public class Player extends Object {
     
     @Override
     public void tick() {
+	// DeathParticle ticks
 	if (dead) {
 	    for (DeathParticle d : deathParticles) {
 		d.tick();
@@ -538,6 +539,7 @@ public class Player extends Object {
 		velX++;
 	    }
 	    
+	    // Set animation based on standing or running
 	    if (grounded) {
 		if (velX == 0) {
 		    setAnim(stand);
@@ -694,6 +696,7 @@ public class Player extends Object {
 
     @Override
     public void render(Graphics g) {
+	// DeathParticle rendering
 	if (dead) {
 	    for (DeathParticle d : deathParticles) {
 		d.render(g);

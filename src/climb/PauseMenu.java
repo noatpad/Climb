@@ -10,7 +10,7 @@ import java.awt.event.KeyEvent;
 public class PauseMenu {
     private Game game;						// Game instance
     private boolean paused;					// Boolean to determine paused state
-    private int selected;			// State to which to exit, current state, current selection
+    private int selected;					// Current selection
     private Color bgColor;					// Background color
     private FontMetrics fm;					// FontMetrics instance
     

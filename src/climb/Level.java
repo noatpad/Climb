@@ -167,6 +167,7 @@ public class Level {
      * Cutscene for ending the level
      */
     private void endCutscene() {
+	// After 60 ticks, walk close to the fire. Else, stay still
 	if (endTimer > 60) {
 	    if (Math.abs(player.getX() - goal.getFirePosX()) > 50) {
 		if (player.getX() > goal.getFirePosX()) {
@@ -174,18 +175,20 @@ public class Level {
 		} else {
 		    player.manualControl(2);
 		}
-	    } else {
+	    } else {	// When close to the fire, sit right next to it & enjoy the stars~
 		player.manualControl(3);
 	    }
 	} else {
 	    player.manualControl(0);
 	}
 	
+	// At 180 ticks, switch to 'complete' track
 	if (endTimer == 180) {
 	    Assets.ascending.stop();
 	    Assets.complete.play();
 	}
 	
+	// Show "COMPLETE" message
 	if (endTimer > 180) {
 	    if (endMessageDisplayTimer < 20) {
 		endMessageDisplayTimer++;
@@ -202,14 +205,14 @@ public class Level {
     }
     
     public void tick() {
-	if (transition) {
+	if (transition) {	// Room transition
 	    transition();
-	} else if (paused) {
+	} else if (paused) {	    // Pause menu
 	    pauseMenu.tick();
 	    if (!pauseMenu.isPaused()) {
 		paused = false;
 	    }
-	} else if (died) {
+	} else if (died) {	// Respawn upon death
 	    deathTimer++;
 	    
 	    if (deathTimer < 10) {
@@ -219,23 +222,26 @@ public class Level {
 	    } else if (deathTimer == 25) {
 		died = false;
 	    }
-	} else if (end) {
+	} else if (end) {	// Goal cutscene
 	    endCutscene();
 	    goal.tick();
-	} else {
+	} else {	    // Continue as normal
 	    player.tick();
 	    
+	    // Enter pause menu when pressing ENTER
 	    if (game.getKeyMan().typed(KeyEvent.VK_ENTER)) {
 		pauseMenu = new PauseMenu(game);
 		paused = true;
 	    }
 	    
+	    // Enter end cutscene when reaching the goal
 	    if (player.isEnd()) {
 		end = true;
 		Assets.level_music.stop();
 		Assets.ascending.play();
 	    }
 	    
+	    // Enter respawn process when dead
 	    if (player.isDead()) {
 		deathTimer++;
 		if (deathTimer > 40) {
@@ -253,6 +259,7 @@ public class Level {
 	g.setColor(Color.black);
 	g.drawImage(Assets.level_bg, Camera.x, Camera.y, null);
 	
+	// Renders the previous area when transitioning
 	if (lastArea != null) {
 	    lastArea.render(g);
 	}
@@ -261,15 +268,18 @@ public class Level {
 	player.render(g);
 	currentArea.render(g);
 	
+	// Transition when respawning
 	if (died) {
 	    g.setColor(Color.black);
 	    g.fillRect(Camera.x, Camera.y - (int) (game.getHeight() * 1.5) + (game.getHeight() / 10 * deathTimer), game.getWidth(), (int) (game.getHeight() * 1.5));
 	}
 	
+	// Render pause menu when paused
 	if (paused) {
 	    pauseMenu.render(g);
 	}
 	
+	// Show "COMPLETE" message
 	if (end) {
 	    Graphics2D g2d = (Graphics2D) g;
 	    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.05f * endMessageDisplayTimer));

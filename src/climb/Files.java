@@ -118,25 +118,25 @@ public class Files {
 		    int x1 = 0, y1 = 0, width = 0, height = 0;
 		    Boundary b = lvl.getAreas().get(i).getBounds().get(Integer.parseInt(elements[0]));
 		    switch (elements[1]) {
-			case "0":
+			case "0":	    // Top part of boundary
 			    x1 = b.getX();
 			    y1 = b.getY() - 18;
 			    width = b.getWidth();
 			    height = 18;
 			    break;
-			case "1":
+			case "1":	    // Right part of boundary
 			    x1 = b.getX() + b.getWidth();
 			    y1 = b.getY();
 			    width = 18;
 			    height = b.getHeight();
 			    break;
-			case "2":
+			case "2":	    // Bottom part of boundary
 			    x1 = b.getX();
 			    y1 = b.getY() + b.getHeight();
 			    width = b.getWidth();
 			    height = 18;
 			    break;
-			case "3":
+			case "3":	    // Left part of boundary
 			    x1 = b.getX() - 18;
 			    y1 = b.getY();
 			    width = 18;
@@ -153,6 +153,7 @@ public class Files {
 	    line = br.readLine();
 	    elements = line.split(",");
 	    
+	    // Goal area of level
 	    Area a = lvl.getAreas().get(Integer.parseInt(elements[0]));
 	    lvl.setGoal(new Goal(
 		    Integer.parseInt(elements[1]) + a.getPosX(),

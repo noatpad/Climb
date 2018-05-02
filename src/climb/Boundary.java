@@ -7,7 +7,7 @@ import java.awt.Rectangle;
 
 public class Boundary extends Object {
     private Rectangle bound, floor, wallL, wallR, ceiling;	// Collision detection rectangles
-    private int fFloor, fWallL, fWallR, fCeiling;
+    private int fFloor, fWallL, fWallR, fCeiling;		// "Flags" to paint boundary edge
 
     /**
      * Boundary Constructor
@@ -82,12 +82,15 @@ public class Boundary extends Object {
 //	g.drawRect(wallL.x, wallL.y, wallL.width, wallL.height);
 //	g.drawRect(wallR.x, wallR.y, wallR.width, wallR.height);
 
+	// Paint within the boundary's dimensions
 	g.setClip(bound);
 	for (int y = getY(); y < getY() + getHeight(); y += Assets.tile[0].getHeight()) {
 	    for (int x = getX(); x < getX() + getWidth(); x += Assets.tile[0].getWidth()) {
 		g.drawImage(Assets.tile[0], x, y, null);
 	    }
 	}
+	
+	// The following will paint the edge if the "flag" is active
 	if (fFloor == 1) {
 	    g.setClip(floor);
 	    for (int x = floor.x; x < floor.x + floor.width; x += Assets.tile[1].getWidth()) {

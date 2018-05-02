@@ -26,6 +26,7 @@ public class Menu {
     private String credits[];			    // Credits
     private int creditsPosX[], creditsPosY[];	    // Credits positions
     
+    // Elements to show off in the title screen
     private Player player;
     private Boundary boundary;
     private Animation tent, campfire;
@@ -85,11 +86,13 @@ public class Menu {
 	    creditsPosY[i] = (int) (1.4 * fm.getAscent() + creditsPosY[i - 1]);
 	}
 	
+	// Add elements to title screen
 	player = new Player(800, 564, null, null);
 	boundary = new Boundary(0, 612, 1000, 168, 0, 0, 0, 0);
 	tent = new Animation(Assets.tent, 150, true);
 	campfire = new Animation(Assets.campfire, 90, true);
 	
+	// Play background music
 	Assets.bg_music.play();
     }
     
@@ -194,7 +197,7 @@ public class Menu {
 		}
 		player.manualControl(3);
 		break;
-	    case 3:
+	    case 3:	// Level preparation
 		player.manualControl(1);
 		if (player.getX() + player.getWidth() < -30) {
 		    Assets.bg_music.stop();

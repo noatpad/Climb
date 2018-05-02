@@ -14,7 +14,6 @@ public class Animation {
 
     /**
      * <b>Animation</b> constructor
-     *
      * @param frames Array of sprites
      * @param speed Speed the animation will run as
      * @param loop If the animation can be looped
@@ -55,7 +54,6 @@ public class Animation {
 
     /**
      * <code>speed</code> Setter
-     *
      * @param speed to modify
      */
     public void setSpeed(int speed) {
@@ -64,7 +62,6 @@ public class Animation {
 
     /**
      * <code>speed</code> Getter
-     *
      * @return speed
      */
     public int getSpeed() {
@@ -73,7 +70,6 @@ public class Animation {
 
     /**
      * Gets current frame of the animation
-     *
      * @return frame in frames[index]
      */
     public BufferedImage getCurrentFrame() {
@@ -86,6 +82,7 @@ public class Animation {
      * Resets animation back to its start
      */
     public void reset() {
+	// Depending on the player's direction, the range of frames is decided (frames facing right are the first half of the frames, while the other has the frames facing left
 	if (right) {
 	    start = 0;
 	    end = frames.length / 2;
