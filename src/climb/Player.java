@@ -352,9 +352,10 @@ public class Player extends Object {
 	}
 	
 	// When sliding down the wall, slow down descent (and update 'facingRight')
-	if (!climbing && ((walledL && left) || walledR && right)) {
+	if (!climbing && (walledL && left || walledR && right)) {
 	    velY = (velY > 2 ? velY - 2 : velY);
 	    facingRight = right;
+	    setAnim(climb);
 	}
 	
 	// Determine when climbing
@@ -364,9 +365,6 @@ public class Player extends Object {
 	    } else if (climbing && !keyC) {
 		climbing = false;
 	    }
-	} else {
-	    walledL = false;
-	    walledR = false;
 	}
 	
 	// Movement
@@ -401,16 +399,16 @@ public class Player extends Object {
 		velX /= 1.4 - (velY != 0 ? .3 : 0);
 	    } else if (left && !walledL) {		    // Holding left (and no wall is in the way)
 		walledR = false;
-		velX -= (velX > -4 ? 2 : 0);
+		velX -= (velX > -5 ? 1 : 0);
 	    } else if (right && !walledR) {		    // Holding right (and no wall is in the way)
 		walledL = false;
-		velX += (velX < 4 ? 2 : 0);
+		velX += (velX < 5 ? 1 : 0);
 	    }
 	    
 	    // velX regulation if going too fast
-	    if (velX > 4) {
+	    if (velX > 5) {
 		velX--;
-	    } else if (velX < -4) {
+	    } else if (velX < -5) {
 		velX++;
 	    }
 	    
@@ -438,8 +436,11 @@ public class Player extends Object {
 		canBoost = true;
 	    } else if (!climbing && velY < 8) {
 		velY++;
-		setAnim(jumpFall);
-		jumpFall.tick(facingRight);
+//		System.out.println(walledL + " " + left + " " + walledR + " " + right);
+		if (!(walledL && left || walledR && right)) {
+		    setAnim(jumpFall);
+		    jumpFall.tick(facingRight);
+		}
 	    }
 	}
 	
