@@ -1,6 +1,8 @@
 
 /* Credit where due:
 Montserrat Font -> https://fonts.google.com/specimen/Montserrat
+
+Soundtracks by Lena Raine
 */
 
 package climb;
@@ -15,11 +17,13 @@ public class Assets {
     public static Font font;			    // Font used in-game
     
     public static BufferedImage title_bg;	    // Background image for title screen
+    public static SoundClip bg_music;		    // Title screen music
     
     public static BufferedImage level_bg;	    // Background image for level screen
     public static BufferedImage tile[];		    // Tile images for textures
     public static BufferedImage spikes[];	    // Images for spikes
     public static BufferedImage tent[], campfire[];	// Animation sprites for goal
+    public static SoundClip level_music, ascending, complete;	// Music for level
     
     public static BufferedImage stand[], run[], jumpFall[], boost[], climb[], sit[];	    // Animation frames for players
     public static BufferedImage deathParticle[];    // Player death particles
@@ -45,6 +49,7 @@ public class Assets {
      */
     public static void menuInit() {
 	title_bg = ImageLoader.loadImage("/images/title_bg.png");
+	bg_music = new SoundClip("/music/title.wav", true);
     }
     
     /**
@@ -74,6 +79,10 @@ public class Assets {
 	for (int i = 0; i < 5; i++) {
 	    campfire[i] = ss.crop(i * 20, 33, 18, 32);
 	}
+	
+	level_music = new SoundClip("/music/level.wav", true);
+	ascending = new SoundClip("/music/ascending.wav", false);
+	complete = new SoundClip("/music/complete.wav", false);
     }
     
     /**

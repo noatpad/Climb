@@ -82,6 +82,8 @@ public class Menu {
 	    creditsPosX[i] = game.getWidth() - fm.stringWidth(credits[i]) - 70;
 	    creditsPosY[i] = (int) (1.4 * fm.getAscent() + creditsPosY[i - 1]);
 	}
+	
+	Assets.bg_music.play();
     }
     
     /* METHODS */
@@ -116,6 +118,7 @@ public class Menu {
 	if (game.getKeyMan().typed(KeyEvent.VK_ENTER)) {
 	    switch (selected) {
 		case 0:	    // Supposed to be level select
+		    Assets.bg_music.stop();
 		    game.prepareLevel(1);
 		    return;
 		case 1:	    // Options

@@ -181,12 +181,19 @@ public class Level {
 	    player.manualControl(0);
 	}
 	
+	if (endTimer == 180) {
+	    Assets.ascending.stop();
+	    Assets.complete.play();
+	}
+	
 	if (endTimer > 180) {
 	    if (endMessageDisplayTimer < 20) {
 		endMessageDisplayTimer++;
 	    }
 	    
 	    if (game.getKeyMan().typed(KeyEvent.VK_ENTER)) {
+		Assets.complete.stop();
+		Assets.bg_music.play();
 		game.setGameState(1);
 	    }
 	}
@@ -225,6 +232,8 @@ public class Level {
 	    
 	    if (player.isEnd()) {
 		end = true;
+		Assets.level_music.stop();
+		Assets.ascending.play();
 	    }
 	    
 	    if (player.isDead()) {
