@@ -129,10 +129,12 @@ public class Animation {
 	
 	if (timer > speed) {
 	    timer = 0;
-	    if (loop) {
-		index++;
-		if (index >= end) {
+	    index++;
+	    if (index >= end) {
+		if (loop) {
 		    index = start;
+		} else {
+		    index--;
 		}
 	    }
 	}

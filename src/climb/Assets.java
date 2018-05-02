@@ -21,7 +21,7 @@ public class Assets {
     public static BufferedImage spikes[];	    // Images for spikes
     public static BufferedImage tent[], campfire[];	// Animation sprites for goal
     
-    public static BufferedImage stand[], run[], jumpFall[], boost[], climb[];	    // Animation frames for players
+    public static BufferedImage stand[], run[], jumpFall[], boost[], climb[], sit[];	    // Animation frames for players
     public static BufferedImage deathParticle[];    // Player death particles
     
     /**
@@ -100,6 +100,10 @@ public class Assets {
 	climb = new BufferedImage[8];
 	for (int i = 0; i < 8; i++) {
 	    climb[i] = ss.crop(i * 25, 160, 25, 40);
+	}
+	sit = new BufferedImage[10];
+	for (int i = 0; i < 10; i++) {
+	    sit[i] = ss.crop(i * 25, 200, 25, 40);
 	}
 	
 	ss = new Spritesheet(ImageLoader.loadImage("/images/deathParticle.png"));

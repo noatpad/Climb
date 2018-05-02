@@ -1,8 +1,11 @@
 
 package climb;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
@@ -14,8 +17,9 @@ public class Level {
     private PauseMenu pauseMenu;		    // PauseMenu object
     private Goal goal;				    // Goal area
     
-    private boolean transition, paused, died;	    // Boolean to determine if transitioning, paused, or died
-    private int deathTimer;
+    private boolean transition, paused, died, end;	    // Booleans for certain events
+    private int deathTimer, endTimer;			    // Timers for certain events
+    private int endMessageDisplayTimer;			    // Timer for "COMPLETE" at the end of the level
     
     /**
      * Level Constructor
@@ -27,6 +31,10 @@ public class Level {
 	transition = false;
 	paused = false;
 	died = false;
+	end = false;
+	deathTimer = 0;
+	endTimer = 0;
+	endMessageDisplayTimer = 0;
 
 	Files.loadLevel(this, lvlNum, areaNum);	    // Loads level from file
 	currentArea = areas.get(areaNum);
@@ -91,6 +99,14 @@ public class Level {
     public Player getPlayer() {
 	return player;
     }
+
+    /**
+     * goal Getter
+     * @return goal
+     */
+    public Goal getGoal() {
+	return goal;
+    }
     
     /* METHODS */
     
@@ -147,6 +163,37 @@ public class Level {
 	}
     }
     
+    /**
+     * Cutscene for ending the level
+     */
+    private void endCutscene() {
+	if (endTimer > 60) {
+	    if (Math.abs(player.getX() - goal.getFirePosX()) > 50) {
+		if (player.getX() > goal.getFirePosX()) {
+		    player.manualControl(1);
+		} else {
+		    player.manualControl(2);
+		}
+	    } else {
+		player.manualControl(3);
+	    }
+	} else {
+	    player.manualControl(0);
+	}
+	
+	if (endTimer > 180) {
+	    if (endMessageDisplayTimer < 20) {
+		endMessageDisplayTimer++;
+	    }
+	    
+	    if (game.getKeyMan().typed(KeyEvent.VK_ENTER)) {
+		game.setGameState(1);
+	    }
+	}
+	
+	endTimer++;
+    }
+    
     public void tick() {
 	if (transition) {
 	    transition();
@@ -165,12 +212,19 @@ public class Level {
 	    } else if (deathTimer == 25) {
 		died = false;
 	    }
+	} else if (end) {
+	    endCutscene();
+	    goal.tick();
 	} else {
 	    player.tick();
 	    
 	    if (game.getKeyMan().typed(KeyEvent.VK_ENTER)) {
 		pauseMenu = new PauseMenu(game, 0, 0);
 		paused = true;
+	    }
+	    
+	    if (player.isEnd()) {
+		end = true;
 	    }
 	    
 	    if (player.isDead()) {
@@ -195,8 +249,8 @@ public class Level {
 	}
 	
 	goal.render(g);
-	currentArea.render(g);
 	player.render(g);
+	currentArea.render(g);
 	
 	if (died) {
 	    g.setColor(Color.black);
@@ -205,6 +259,17 @@ public class Level {
 	
 	if (paused) {
 	    pauseMenu.render(g);
+	}
+	
+	if (end) {
+	    Graphics2D g2d = (Graphics2D) g;
+	    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.05f * endMessageDisplayTimer));
+	    g2d.setColor(Color.white);
+	    g2d.setFont(Assets.font.deriveFont(90f));
+	    g2d.drawString("COMPLETE", Camera.x + 50, Camera.y + 100 + endMessageDisplayTimer);
+	    g.setFont(Assets.font.deriveFont(Font.ITALIC, 15f));
+	    g2d.drawString("Press ENTER to continue...", Camera.x + 55, Camera.y + 130 + endMessageDisplayTimer);
+	    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
 	}
     }
 }

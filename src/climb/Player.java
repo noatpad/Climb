@@ -22,11 +22,13 @@ public class Player extends Object {
     private int boostTimer;			// Timer before boost runs out
     private int jumpTimer, wallJumpTimer;	// Timers for jumps and wall jumps
     
-    private boolean dead;
+    private boolean dead;				    // Boolean to determine if player died
     private ArrayList<DeathParticle> deathParticles;	    // List of death particles
     
-    private Animation stand, run, jumpFall, climb, currentAnim;	    // Player animations
-    private BufferedImage boostImg;				    // Frame of player boosting
+    private boolean end;	// Boolean to determine if player reached the goal
+    
+    private Animation stand, run, jumpFall, climb, sit, currentAnim;	    // Player animations
+    private BufferedImage boostImg;					    // Frame of player boosting
     
     /**
      * Player constructor
@@ -58,10 +60,13 @@ public class Player extends Object {
 	dead = false;
 	deathParticles = new ArrayList<>();
 	
+	end = false;
+	
 	stand = new Animation(Assets.stand, 300, true);
 	run = new Animation(Assets.run, 20, true);
 	jumpFall = new Animation(Assets.jumpFall, 40, false);
 	climb = new Animation(Assets.climb, 30, true);
+	sit = new Animation(Assets.sit, 150, false);
 	currentAnim = stand;
 	boostImg = Assets.boost[0];
     }
@@ -106,6 +111,14 @@ public class Player extends Object {
      */
     public boolean isDead() {
 	return dead;
+    }
+
+    /**
+     * end Getter
+     * @return end
+     */
+    public boolean isEnd() {
+	return end;
     }
     
     /* METHODS */
@@ -257,6 +270,9 @@ public class Player extends Object {
 	currentAnim.tick(facingRight);
     }
     
+    /**
+     * Upon death, launch death particles
+     */
     private void death() {
 	dead = true;
 	deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, 0, -10));
@@ -269,11 +285,43 @@ public class Player extends Object {
 	deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, -8, -8));
     }
     
+    /**
+     * Respawn in specific area and clear all death particles
+     */
     public void respawn() {
 	setX(area.getSpawnX() + area.getPosX());
 	setY(area.getSpawnY() + area.getPosY());
 	deathParticles.clear();
 	dead = false;
+    }
+    
+    /**
+     * Manual control of player through certain events, such as cutscenes
+     * @param input Type of manual event (0 = no event, 1 = walk left, 2 = walk right, 3 = sit)
+     */
+    public void manualControl(int input) {
+	switch (input) {
+	    case 1:	// walk left
+		setAnim(run);
+		velX -= (velX > -5 ? 1 : 0);
+		run.tick(false);
+		setX(getX() + velX);
+		break;
+	    case 2:	// walk right
+		setAnim(run);
+		velX += (velX < 5 ? 1 : 0);
+		run.tick(true);
+		setX(getX() + velX);
+		break;
+	    case 3:	// sit
+		setAnim(sit);
+		sit.tick(facingRight);
+		break;
+	    default:	// no input (case 0)
+		setAnim(stand);
+		stand.tick(facingRight);
+		break;
+	}
     }
     
     @Override
@@ -413,6 +461,14 @@ public class Player extends Object {
 	    if ((grounded || ceiling) && (walledL || walledR)) {
 		break;
 	    }
+	}
+	
+	// If reached the end, trigger it
+	if (grounded && lvl.getGoal().getBounds().intersects(box)) {
+	    boostTimer = 0;
+	    velX = 0;
+	    end = true;
+	    return;
 	}
 	
 	// When sliding down the wall, slow down descent (and update 'facingRight')
