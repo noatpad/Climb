@@ -257,6 +257,18 @@ public class Player extends Object {
 	currentAnim.tick(facingRight);
     }
     
+    private void death() {
+	dead = true;
+	deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, 0, -10));
+	deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, 8, -8));
+	deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, 10, 0));
+	deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, 8, 8));
+	deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, 0, 10));
+	deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, -8, 8));
+	deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, -10, 0));
+	deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, -8, -8));
+    }
+    
     public void respawn() {
 	setX(area.getSpawnX() + area.getPosX());
 	setY(area.getSpawnY() + area.getPosY());
@@ -317,15 +329,7 @@ public class Player extends Object {
 		    default: break;
 		}
 		if (good) {
-		    dead = true;
-		    deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, 0, -10));
-		    deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, 8, -8));
-		    deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, 10, 0));
-		    deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, 8, 8));
-		    deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, 0, 10));
-		    deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, -8, 8));
-		    deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, -10, 0));
-		    deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, -8, -8));
+		    death();
 		    return;
 		}
 	    }
@@ -607,6 +611,19 @@ public class Player extends Object {
 	// Update position with velocity
 	setX(getX() + velX);
 	setY(getY() + velY);
+	
+	if (getX() + getWidth() / 2 > area.getPosX() + lvl.getGame().getWidth()) {
+	    setX(area.getPosX() + lvl.getGame().getWidth() - getWidth() / 2);
+	} else if (getX() + getWidth() / 2 < area.getPosX()) {
+	    setX(area.getPosX() - getWidth() / 2);
+	}
+	
+	if (getY() + getHeight() / 2 < area.getPosY()) {
+	    setY(area.getPosY() - getHeight() / 2);
+	} else if (getY() + getHeight() / 2 > area.getPosY() + lvl.getGame().getHeight()) {
+	    death();
+	    return;
+	}
 	
 	// Collision position update
 	updateBoxes();
