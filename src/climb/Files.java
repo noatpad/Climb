@@ -69,7 +69,7 @@ public class Files {
 		y = Integer.parseInt(line);
 		
 		for (int j = 0; j < y; j++) {	    // Repeat for each load zone
-		    // Read load zone direction, dimensions, and room to transport to	[direction, startPos, endPos, toArea]
+		    // Read load zone direction, dimensions, and room to transport to [direction, startPos, endPos, toArea]
 		    int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
 		    line = br.readLine();
 		    elements = line.split(",");
@@ -105,6 +105,48 @@ public class Files {
 			    y2 + lvl.getAreas().get(i).getPosY(),
 			    Integer.parseInt(elements[0]),
 			    Integer.parseInt(elements[3])));
+		}
+		
+		// Read number of spike areas
+		line = br.readLine();
+		y = Integer.parseInt(line);
+		
+		for (int j = 0; j < y; j++) {
+		    line = br.readLine();
+		    elements = line.split(",");
+		    
+		    int x1 = 0, y1 = 0, width = 0, height = 0;
+		    Boundary b = lvl.getAreas().get(i).getBounds().get(Integer.parseInt(elements[0]));
+		    switch (elements[1]) {
+			case "0":
+			    x1 = b.getX();
+			    y1 = b.getY() - 18;
+			    width = b.getWidth();
+			    height = 18;
+			    break;
+			case "1":
+			    x1 = b.getX() + b.getWidth();
+			    y1 = b.getY();
+			    width = 18;
+			    height = b.getHeight();
+			    break;
+			case "2":
+			    x1 = b.getX();
+			    y1 = b.getY() + b.getHeight();
+			    width = b.getWidth();
+			    height = 18;
+			    break;
+			case "3":
+			    x1 = b.getX() - 18;
+			    y1 = b.getY();
+			    width = 18;
+			    height = b.getHeight();
+			default:
+			    System.err.println("ERROR: Couldn't read spike specifications! " + elements[0]);
+			    break;
+		    }
+//		    lvl.getAreas().get(i).getSpikes().add(new Spikes(lvl.getAreas().get(i).getBounds().get(elements[0]), elements[1]));
+		    lvl.getAreas().get(i).getSpikes().add(new Spikes(x1, y1, width, height, Integer.parseInt(elements[1])));
 		}
 	    }
 	} catch (IOException ioe) {

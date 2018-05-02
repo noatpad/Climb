@@ -275,6 +275,25 @@ public class Player extends Object {
 	    }
 	}
 	
+	// Spike collision detection
+	for (Spikes s : area.getSpikes()) {
+	    if (s.getBounds().intersects(box)) {
+		// Only lose life if moving towards it
+		boolean good = false;
+		switch (s.getSide()) {
+		    case 0: good = velY > 0; break;
+		    case 1: good = velX < 0; break;
+		    case 2: good = velY < 0; break;
+		    case 3: good = velX > 0; break;
+		    default: break;
+		}
+		if (good) {
+		    lvl.death();
+		    return;
+		}
+	    }
+	}
+	
 	// Boundary collision detection
 	for (Boundary b : area.getBounds()) {
 	    // Temporary booleans for walledL, walledR, grounded, & hitting the ceiling (resets for each boundary)

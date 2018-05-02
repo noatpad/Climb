@@ -7,12 +7,12 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class Level {
-    private Game game;			    // Game instance
-    private ArrayList<Area> areas;	    // List of areas in level
-    private Area currentArea, lastArea;	    // Current area that player was in (and previous area as well)
-    private Player player;		    // Player object
-    private PauseMenu pauseMenu;	    // PauseMenu object
-    private boolean transition, paused;	    // Boolean to determine if transitioning or paused
+    private Game game;				    // Game instance
+    private ArrayList<Area> areas;		    // List of areas in level
+    private Area currentArea, lastArea;		    // Current area that player was in (and previous area as well)
+    private Player player;			    // Player object
+    private PauseMenu pauseMenu;		    // PauseMenu object
+    private boolean transition, paused, died;	    // Boolean to determine if transitioning, paused, or died
     
     /**
      * Level Constructor
@@ -23,6 +23,7 @@ public class Level {
 	areas = new ArrayList<>();
 	transition = false;
 	paused = false;
+	died = false;
 
 	Files.loadLevel(this, lvlNum, areaNum);	    // Loads level from file
 	currentArea = areas.get(areaNum);
@@ -135,6 +136,12 @@ public class Level {
 	}
     }
     
+    public void death() {
+	player = null;
+	died = true;
+	System.out.println("climb.Level.death()");
+    }
+    
     public void tick() {
 	if (transition) {
 	    transition();
@@ -143,6 +150,8 @@ public class Level {
 	    if (!pauseMenu.isPaused()) {
 		paused = false;
 	    }
+	} else if (died) {
+	    
 	} else {
 	    player.tick();
 	    if (game.getKeyMan().typed(KeyEvent.VK_ENTER)) {
@@ -161,7 +170,9 @@ public class Level {
 	    lastArea.render(g);
 	}
 	currentArea.render(g);
-	player.render(g);
+	if (!died) {
+	    player.render(g);
+	}
 	
 	if (paused) {
 	    pauseMenu.render(g);

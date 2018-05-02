@@ -18,6 +18,7 @@ public class Assets {
     
     public static BufferedImage level_bg;	    // Background image for level screen
     public static BufferedImage tile[];		    // Tile images for textures
+    public static BufferedImage spikes[];	    // Images for spikes
     
     public static BufferedImage stand[], run[], jumpFall[], boost[], climb[];	    // Animation frames for players
     
@@ -56,6 +57,11 @@ public class Assets {
 	tile[2] = ImageLoader.loadImage("/images/tile.png", 48, 0, 10, 24);
 	tile[3] = ImageLoader.loadImage("/images/tile.png", 72, 0, 24, 10);
 	tile[4] = ImageLoader.loadImage("/images/tile.png", 96, 0, 10, 24);
+	
+	spikes = new BufferedImage[4];
+	for (int i = 0; i < 4; i++) {
+	    spikes[i] = ImageLoader.loadImage("/images/spike.png", i * 9, 0, 9, 9);
+	}
     }
     
     /**

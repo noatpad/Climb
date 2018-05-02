@@ -9,6 +9,7 @@ public class Area {
     private int posX, posY, spawnX, spawnY;	// Room position (by its top-left corner) / Spawn point position
     private ArrayList<Boundary> bounds;		// List of Boundaries in room
     private ArrayList<LoadZone> loadZones;	// List of LoadZones in room
+    private ArrayList<Spikes> spikes;		// List of Spikes in room
 
     /**
      * Area Constructor
@@ -18,6 +19,7 @@ public class Area {
 	this.roomID = roomID;
 	bounds = new ArrayList<>();
 	loadZones = new ArrayList<>();
+	spikes = new ArrayList<>();
     }
     
     /* GETTERS AND SETTERS */
@@ -101,14 +103,26 @@ public class Area {
     public ArrayList<LoadZone> getLoadZones() {
 	return loadZones;
     }
+
+    /**
+     * spikes Getter
+     * @return spikes
+     */
+    public ArrayList<Spikes> getSpikes() {
+	return spikes;
+    }
     
     public void render(Graphics g) {
 	for (Boundary b : bounds) {
 	    b.render(g);
 	}
 	
-	for (LoadZone l : loadZones) {
-	    l.render(g);
+	for (Spikes s : spikes) {
+	    s.render(g);
 	}
+	
+//	for (LoadZone l : loadZones) {
+//	    l.render(g);
+//	}
     }
 }
