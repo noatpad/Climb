@@ -436,7 +436,6 @@ public class Player extends Object {
 		canBoost = true;
 	    } else if (!climbing && velY < 8) {
 		velY++;
-//		System.out.println(walledL + " " + left + " " + walledR + " " + right);
 		if (!(walledL && left || walledR && right)) {
 		    setAnim(jumpFall);
 		    jumpFall.tick(facingRight);

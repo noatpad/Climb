@@ -50,14 +50,18 @@ public class Files {
 		line = br.readLine();
 		y = Integer.parseInt(line);
 		for (int j = 0; j < y; j++) {	    // Repeat for each boundary
-		    // Read boundary dimensions [x, y, width, height]
+		    // Read boundary dimensions [x, y, width, height] & boundary flags [ground, wallL, wallR, ceiling]
 		    line = br.readLine();
 		    elements = line.split(",");
 		    lvl.getAreas().get(i).getBounds().add(new Boundary(
 			    Integer.parseInt(elements[0]) + lvl.getAreas().get(i).getPosX(), 
 			    Integer.parseInt(elements[1]) + lvl.getAreas().get(i).getPosY(), 
 			    Integer.parseInt(elements[2]), 
-			    Integer.parseInt(elements[3])));
+			    Integer.parseInt(elements[3]),
+			    Integer.parseInt(elements[4]), 
+			    Integer.parseInt(elements[5]),
+			    Integer.parseInt(elements[6]), 
+			    Integer.parseInt(elements[7])));
 		}
 		
 		// Read number of load zones in room
