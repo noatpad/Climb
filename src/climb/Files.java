@@ -148,6 +148,19 @@ public class Files {
 		    lvl.getAreas().get(i).getSpikes().add(new Spikes(x1, y1, width, height, Integer.parseInt(elements[1])));
 		}
 	    }
+	    
+	    line = br.readLine();	// Skip empty line
+	    line = br.readLine();
+	    elements = line.split(",");
+	    
+	    Area a = lvl.getAreas().get(Integer.parseInt(elements[0]));
+	    lvl.setGoal(new Goal(
+		    Integer.parseInt(elements[1]) + a.getPosX(),
+		    Integer.parseInt(elements[2]) + a.getPosY(),
+		    Integer.parseInt(elements[3]),
+		    Integer.parseInt(elements[4]),
+		    Integer.parseInt(elements[5]) + a.getPosX(),
+		    Integer.parseInt(elements[6]) + a.getPosX()));
 	} catch (IOException ioe) {
 	    System.err.println("ERROR: Unable to find level file?! " + ioe.toString());
 	}

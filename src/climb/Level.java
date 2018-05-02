@@ -12,6 +12,7 @@ public class Level {
     private Area currentArea, lastArea;		    // Current area that player was in (and previous area as well)
     private Player player;			    // Player object
     private PauseMenu pauseMenu;		    // PauseMenu object
+    private Goal goal;				    // Goal area
     
     private boolean transition, paused, died;	    // Boolean to determine if transitioning, paused, or died
     private int deathTimer;
@@ -41,6 +42,14 @@ public class Level {
      */
     public void setTransition(boolean transition) {
 	this.transition = transition;
+    }
+
+    /**
+     * goal Setter
+     * @param goal to modify 
+     */
+    public void setGoal(Goal goal) {
+	this.goal = goal;
     }
 
     /**
@@ -171,6 +180,8 @@ public class Level {
 		    deathTimer = 0;
 		}
 	    }
+	    
+	    goal.tick();
 	}
     }
     
@@ -182,6 +193,8 @@ public class Level {
 	if (lastArea != null) {
 	    lastArea.render(g);
 	}
+	
+	goal.render(g);
 	currentArea.render(g);
 	player.render(g);
 	

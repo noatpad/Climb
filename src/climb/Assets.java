@@ -19,6 +19,7 @@ public class Assets {
     public static BufferedImage level_bg;	    // Background image for level screen
     public static BufferedImage tile[];		    // Tile images for textures
     public static BufferedImage spikes[];	    // Images for spikes
+    public static BufferedImage tent[], campfire[];	// Animation sprites for goal
     
     public static BufferedImage stand[], run[], jumpFall[], boost[], climb[];	    // Animation frames for players
     public static BufferedImage deathParticle[];    // Player death particles
@@ -62,6 +63,16 @@ public class Assets {
 	spikes = new BufferedImage[4];
 	for (int i = 0; i < 4; i++) {
 	    spikes[i] = ImageLoader.loadImage("/images/spike.png", i * 9, 0, 9, 9);
+	}
+	
+	Spritesheet ss = new Spritesheet(ImageLoader.loadImage("/images/camp.png"));
+	tent = new BufferedImage[3];
+	for (int i = 0; i < 3; i++) {
+	    tent[i] = ss.crop(i * 63, 0, 63, 33);
+	}
+	campfire = new BufferedImage[5];
+	for (int i = 0; i < 5; i++) {
+	    campfire[i] = ss.crop(i * 20, 33, 18, 32);
 	}
     }
     
