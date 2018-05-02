@@ -10,12 +10,7 @@ import java.awt.event.KeyEvent;
 public class PauseMenu {
     private Game game;						// Game instance
     private boolean paused;					// Boolean to determine paused state
-    private int exitState, state, selected;			// State to which to exit, current state, current selection
-    /* State values:
-    0 -> Main pause menu
-    1 -> Options menu
-    2 -> Controller config menu
-    */
+    private int selected;			// State to which to exit, current state, current selection
     private Color bgColor;					// Background color
     private FontMetrics fm;					// FontMetrics instance
     
@@ -30,13 +25,9 @@ public class PauseMenu {
     /**
      * PauseMenu Constructor
      * @param game Game instance
-     * @param exitState State that menu can be in to exit pause menu altogether
-     * @param state Current state
      */
-    public PauseMenu(Game game, int exitState, int state) {
+    public PauseMenu(Game game) {
 	this.game = game;
-	this.exitState = exitState;
-	this.state = state;
 	paused = true;
 	selected = 0;
 	bgColor = new Color(0, 0, 0, 0.4f);
@@ -93,13 +84,15 @@ public class PauseMenu {
 		case 0:	    // Resume
 		    paused = false;
 		    return;
-		case 1:	    // Restart level (NOT YET IMPLEMENTED)
+		case 1:	    // Restart level
+		    game.getLvl().getPlayer().death();
+		    paused = false;
 		    return;
-		case 2:	    // Options
-		    state = 1;
-		    return;
-		case 3:	    // Return to Title
+		case 2:	    // Return to Title
+		    Assets.level_music.stop();
+		    Assets.bg_music.play();
 		    game.setGameState(1);
+		    return;
 		default: break;
 	    }
 	}
@@ -109,16 +102,11 @@ public class PauseMenu {
     
     public void render(Graphics g) {
 	g.setColor(bgColor);
-	g.fillRect(0, 0, game.getWidth(), game.getHeight());
+	g.fillRect(Camera.x, Camera.y, game.getWidth(), game.getHeight());
 	g.setFont(Assets.font.deriveFont(25f));
-	for (int i = 0; i < 4; i++) {
-	    if (i == 1) {
-		g.setColor(new Color(0.5f, 0.5f, 0.5f));
-	    } else {
-		g.setColor(Color.white);
-	    }
-	    g.drawString(pauseOptions[i], pauseOptionsPosX[i], pauseOptionsPosY[i] + (i == selected ? posOffset : 0));
-	}
+	g.setColor(Color.white);
+	for (int i = 0; i < 3; i++) {
+	    g.drawString(pauseOptions[i], Camera.x + pauseOptionsPosX[i], Camera.y + pauseOptionsPosY[i] + (i == selected ? posOffset : 0));
 	}
     }
 }

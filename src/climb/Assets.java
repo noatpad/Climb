@@ -41,6 +41,7 @@ public class Assets {
 	}
 	
 	menuInit();	// Call menuInit() since first load lands on the main menu
+	levelInit();	// Call levelInit() to load level elements
 	playerInit();	// Call playerInit() too
     }
     

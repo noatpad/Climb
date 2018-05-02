@@ -273,7 +273,7 @@ public class Player extends Object {
     /**
      * Upon death, launch death particles
      */
-    private void death() {
+    public void death() {
 	dead = true;
 	deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, 0, -10));
 	deathParticles.add(new DeathParticle(getX() + getWidth() / 2, getY() + getHeight() / 2, 8, -8));

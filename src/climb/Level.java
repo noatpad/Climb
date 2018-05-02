@@ -226,7 +226,7 @@ public class Level {
 	    player.tick();
 	    
 	    if (game.getKeyMan().typed(KeyEvent.VK_ENTER)) {
-		pauseMenu = new PauseMenu(game, 0, 0);
+		pauseMenu = new PauseMenu(game);
 		paused = true;
 	    }
 	    

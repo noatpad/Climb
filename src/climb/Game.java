@@ -79,6 +79,10 @@ public class Game implements Runnable {
 	return keyMan;
     }
 
+    public Level getLvl() {
+	return lvl;
+    }
+
     /* METHODS */
     
     @Override
@@ -125,7 +129,7 @@ public class Game implements Runnable {
     public void prepareLevel(int level) {
 	Assets.levelInit();
 	Assets.level_music.play();
-	lvl = new Level(this, level, 4);
+	lvl = new Level(this, level, 0);
 	gameState = 2;
     }
     
