@@ -356,6 +356,9 @@ public class Player extends Object {
 	    velY = (velY > 2 ? velY - 2 : velY);
 	    facingRight = right;
 	    setAnim(climb);
+	} else if (!grounded && !climbing) {
+	    setAnim(jumpFall);
+	    jumpFall.tick(facingRight);
 	}
 	
 	// Determine when climbing
@@ -365,6 +368,9 @@ public class Player extends Object {
 	    } else if (climbing && !keyC) {
 		climbing = false;
 	    }
+	} else {
+	    walledL = false;
+	    walledR = false;
 	}
 	
 	// Movement
@@ -436,10 +442,6 @@ public class Player extends Object {
 		canBoost = true;
 	    } else if (!climbing && velY < 8) {
 		velY++;
-		if (!(walledL && left || walledR && right)) {
-		    setAnim(jumpFall);
-		    jumpFall.tick(facingRight);
-		}
 	    }
 	}
 	
