@@ -27,7 +27,7 @@ public class Level {
 	Files.loadLevel(this, lvlNum, areaNum);	    // Loads level from file
 	currentArea = areas.get(areaNum);
 	Camera.levelInit(currentArea);		    // Sets up camera
-	player = new Player(currentArea.getSpawnX(), currentArea.getSpawnY(), this, currentArea);
+	player = new Player(currentArea.getSpawnX() + currentArea.getPosX(), currentArea.getSpawnY() + currentArea.getPosY(), this, currentArea);
     }
     
     /* SETTERS AND GETTERS */
