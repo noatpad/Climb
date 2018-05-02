@@ -310,6 +310,10 @@ public class Player extends Object {
 		}
 		if (good) {
 		    area = null;
+		    if (l.getDirection() == 0) {
+			climbing = false;
+			velY = -12;
+		    }
 		    lvl.startTransition(l);
 		    return;
 		}
