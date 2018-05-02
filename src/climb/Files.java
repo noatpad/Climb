@@ -145,7 +145,6 @@ public class Files {
 			    System.err.println("ERROR: Couldn't read spike specifications! " + elements[0]);
 			    break;
 		    }
-//		    lvl.getAreas().get(i).getSpikes().add(new Spikes(lvl.getAreas().get(i).getBounds().get(elements[0]), elements[1]));
 		    lvl.getAreas().get(i).getSpikes().add(new Spikes(x1, y1, width, height, Integer.parseInt(elements[1])));
 		}
 	    }

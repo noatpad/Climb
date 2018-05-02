@@ -124,7 +124,7 @@ public class Game implements Runnable {
      */
     public void prepareLevel(int level) {
 	Assets.levelInit();
-	lvl = new Level(this, level, 0);
+	lvl = new Level(this, level, 4);
 	gameState = 2;
     }
     

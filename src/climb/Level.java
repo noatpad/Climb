@@ -156,8 +156,6 @@ public class Level {
 	    } else if (deathTimer == 25) {
 		died = false;
 	    }
-//	    player.respawn();
-//	    died = false;
 	} else {
 	    player.tick();
 	    
